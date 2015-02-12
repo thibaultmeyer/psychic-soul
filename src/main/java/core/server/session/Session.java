@@ -64,7 +64,7 @@ public class Session {
         this.stageLevel = SessionStageLevel.NOT_AUTHENTICATED;
         this.inputBuffer = new ArrayList<String>();
         this.outputBuffer = new ArrayList<String>();
-        this.lastPingSent = Instant.now().plusMillis(Settings.socketTTL * 800);
+        this.lastPingSent = Instant.now();
     }
 
     /**

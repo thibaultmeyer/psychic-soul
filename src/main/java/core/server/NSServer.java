@@ -8,7 +8,6 @@ import core.network.NIOServer;
 import core.server.command.Command;
 import core.server.database.DBPool;
 import core.server.session.Session;
-import core.server.session.SessionStageLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -293,12 +292,11 @@ public class NSServer implements NIOEventListener {
             if (usrSess.disconnectReason != null && usrSess.network.socket != null && usrSess.outputBuffer.isEmpty()) {
                 this.nioServer.addToDisconnect(usrSess.network.socket, usrSess.disconnectReason);
             } else {
-                if ((usrSess.stageLevel == SessionStageLevel.AUTHENTICATED || usrSess.stageLevel == SessionStageLevel.AUTHENTICATED_EXTERNAL)
-                        && usrSess.lastPingSent.isBefore(currentInstant)) {
-                    final Instant lastSockActivity = this.nioServer.getInactivityTTL(usrSess.network.socket);
+                final Instant lastSockActivity = this.nioServer.getInactivityTTL(usrSess.network.socket);
+                if (lastSockActivity != null && currentInstant.isAfter(lastSockActivity.plusMillis(Settings.socketTTL * 700)) && usrSess.lastPingSent.isBefore(currentInstant)) {
                     usrSess.outputBuffer.add(String.format("ping %d\n", lastSockActivity.plusSeconds(Settings.socketTTL).minusSeconds(currentInstant.getEpochSecond()).getEpochSecond()));
                     usrSess.network.registerWriteEvent();
-                    usrSess.lastPingSent = currentInstant.plusSeconds(Settings.socketTTL * 800);
+                    usrSess.lastPingSent = currentInstant.plusMillis(Settings.socketTTL * 800);
                 }
             }
         }
@@ -314,7 +312,7 @@ public class NSServer implements NIOEventListener {
     @Override
     public void onDisconnected(SocketChannel socket, DisconnectReason discoReason) throws IOException {
         final Session usrSess = this.connectedUserSessions.get(socket.hashCode());
-        if (usrSess != null) {
+        if (usrSess != null && usrSess.user.login != null) {
             Command cmdState = this.enabledCommands.get("state");
             if (cmdState != null) {
                 cmdState.execute((String[]) Arrays.asList("logout", "offline").toArray(), usrSess, this.connectedUserSessions.values(), this.globalFollowers);
