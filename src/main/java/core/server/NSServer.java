@@ -293,7 +293,7 @@ public class NSServer implements NIOEventListener {
                 this.nioServer.addToDisconnect(usrSess.network.socket, usrSess.disconnectReason);
             } else {
                 final Instant lastSockActivity = this.nioServer.getInactivityTTL(usrSess.network.socket);
-                if (lastSockActivity != null && currentInstant.isAfter(lastSockActivity.plusMillis(Settings.socketTTL * 700)) && usrSess.lastPingSent.isBefore(currentInstant)) {
+                if (lastSockActivity != null && currentInstant.isAfter(lastSockActivity.plusMillis(Settings.socketTTL * 750)) && usrSess.lastPingSent.isBefore(currentInstant)) {
                     usrSess.outputBuffer.add(String.format("ping %d\n", lastSockActivity.plusSeconds(Settings.socketTTL).minusSeconds(currentInstant.getEpochSecond()).getEpochSecond()));
                     usrSess.network.registerWriteEvent();
                     usrSess.lastPingSent = currentInstant.plusMillis(Settings.socketTTL * 800);

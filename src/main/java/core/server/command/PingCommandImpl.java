@@ -57,7 +57,7 @@ public class PingCommandImpl implements Command {
      */
     @Override
     public boolean canExecute(final SessionStageLevel usl) {
-        return usl == SessionStageLevel.AUTHENTICATED || usl == SessionStageLevel.AUTHENTICATED_EXTERNAL;
+        return true;
     }
 
     /**
