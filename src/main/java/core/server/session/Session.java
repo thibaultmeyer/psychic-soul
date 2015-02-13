@@ -87,6 +87,6 @@ public class Session {
                 payload += data;
             }
         }
-        return payload.isEmpty() ? null : payload.split("\\s+");
+        return payload.isEmpty() ? null : payload.trim().split("\\s+");
     }
 }
