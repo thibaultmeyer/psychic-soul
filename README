@@ -1,0 +1,12 @@
+Psychic Soul
+============
+
+Psychic (Soul) est un serveur de messagerie instantanée utilisant le protocole
+Netsoul. Il a été développé à partir des quelques RFC trouvées sur internet et
+des observations faites le comportement des clients Netsoul existants.
+
+
+Si vous avez besoin d’aide sur le l’installation et l’utilisation du serveur,
+rendez-vous sur le wiki (https://github.com/0xbaadf00d/psychic-soul/wiki) du
+projet. Vous y trouverez également quelques informations sur le protocole
+Netsoul et sur les clients existants.
