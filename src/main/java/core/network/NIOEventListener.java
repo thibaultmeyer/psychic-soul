@@ -62,7 +62,7 @@ public interface NIOEventListener {
     /**
      * Called when socket channel will be closed.
      *
-     * @param socket       The socket channel
+     * @param socket      The socket channel
      * @param discoReason The disconnection reason
      * @throws java.io.IOException If IO operation fail (like read/write on socket)
      */

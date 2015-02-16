@@ -5,10 +5,12 @@ import core.crypto.MD5;
 import core.network.DisconnectReason;
 import core.server.database.DBPool;
 import core.server.session.Session;
+import core.server.session.SessionAuthType;
 import core.server.session.SessionStageLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,7 +23,7 @@ import java.util.Map;
 /**
  * Authentication agent for user from external location.
  * <pre>
- *     OpCode: ext_user_log
+ *     OpCode: ext_user_log | user_log
  *     Args  : 1. Login
  *             2. MD5("&lt;random md5 hash&gt;-&lt;host client&gt;/&lt;port client&gt;&lt;pass socks&gt;")
  *             3. Client Name URL encoded (max 64 char)
@@ -31,12 +33,12 @@ import java.util.Map;
  * @author Thibault Meyer
  * @since 1.0.0
  */
-public class ExtUserLogCommandImpl implements Command {
+public class UserLogCommandImpl implements Command {
 
     /**
      * Logger.
      */
-    private static final Logger LOG = LoggerFactory.getLogger(ExtUserLogCommandImpl.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(UserLogCommandImpl.class.getName());
 
 
     /**
@@ -47,7 +49,7 @@ public class ExtUserLogCommandImpl implements Command {
     /**
      * Default constructor.
      */
-    public ExtUserLogCommandImpl() {
+    public UserLogCommandImpl() {
         try {
             this.changeState = (Command) Class.forName("core.server.command.StateCommandImpl").newInstance();
         } catch (LinkageError | ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
@@ -87,14 +89,15 @@ public class ExtUserLogCommandImpl implements Command {
     }
 
     /**
-     * Check if this command can by executed at given stage level.
+     * Check if this command can by executed by this user session.
      *
-     * @param usl The current user session stage level
+     * @param usrSession The current user session
      * @return {@code true} is the command can be executed, otherwise, {@code false}
+     * @since 1.1.0
      */
     @Override
-    public boolean canExecute(final SessionStageLevel usl) {
-        return usl == SessionStageLevel.EXTERNAL_AUTHENTICATION || usl == SessionStageLevel.INTERNAL_AUTHENTICATION;
+    public boolean canExecute(final Session usrSession) {
+        return usrSession.stageLevel == SessionStageLevel.AUTHENTICATION_REQUESTED;
     }
 
     /**
@@ -110,6 +113,7 @@ public class ExtUserLogCommandImpl implements Command {
     @Override
     public void execute(final String[] payload, final Session usrSession, final Collection<Session> connectedSessions, final Map<String, List<Session>> globalFollowers) throws ArrayIndexOutOfBoundsException {
         String userGroup = null;
+        payload[1] = payload[1].substring(0, payload[1].length() > 35 ? 35 : payload[1].length());
         final Connection dbConn = DBPool.getInstance().getSQLConnection();
         try {
             if (Settings.databaseBuiltIntFunction) {
@@ -153,15 +157,35 @@ public class ExtUserLogCommandImpl implements Command {
 
         if (userGroup != null) {
             if (connectedSessions.stream().filter(us -> us.user.login != null && us.user.login.compareTo(payload[1]) == 0).count() >= Settings.cfgMaxSessionPerLogin) {
-                usrSession.outputBuffer.add("rep 403 -- too many sessions opened\n");
+                usrSession.outputBuffer.add("rep 737 -- too many sessions opened\n");
                 usrSession.disconnectReason = DisconnectReason.TOO_MANY_SESSIONS;
             } else {
                 usrSession.user.login = payload[1];
-                usrSession.stageLevel = SessionStageLevel.AUTHENTICATED_EXTERNAL;
+                usrSession.stageLevel = SessionStageLevel.AUTHENTICATED;
                 usrSession.user.loginTime = System.currentTimeMillis() / 1000;
                 usrSession.user.group = userGroup;
-                usrSession.user.location = payload[3].substring(0, payload[3].length() > 64 ? 64 : payload[3].length());
-                usrSession.user.clientName = payload[4].substring(0, payload[4].length() > 64 ? 64 : payload[4].length());
+                try {
+                    String urlDecodedData = java.net.URLDecoder.decode(payload[3], "UTF-8");
+                    if (urlDecodedData.length() > 64) {
+                        urlDecodedData = urlDecodedData.substring(0, urlDecodedData.length() > 64 ? 64 : urlDecodedData.length());
+                        usrSession.user.location = java.net.URLEncoder.encode(urlDecodedData, "UTF-8").replaceAll("\\+", "%20");
+                    } else {
+                        usrSession.user.location = payload[3];
+                    }
+                } catch (UnsupportedEncodingException e) {
+                    usrSession.user.location = payload[3].substring(0, payload[3].length() > 64 ? 64 : payload[3].length());
+                }
+                try {
+                    String urlDecodedData = java.net.URLDecoder.decode(payload[4], "UTF-8");
+                    if (urlDecodedData.length() > 64) {
+                        urlDecodedData = urlDecodedData.substring(0, urlDecodedData.length() > 64 ? 64 : urlDecodedData.length());
+                        usrSession.user.clientName = java.net.URLEncoder.encode(urlDecodedData, "UTF-8").replaceAll("\\+", "%20");
+                    } else {
+                        usrSession.user.clientName = payload[4];
+                    }
+                } catch (UnsupportedEncodingException e) {
+                    usrSession.user.clientName = payload[4].substring(0, payload[4].length() > 64 ? 64 : payload[4].length());
+                }
                 usrSession.outputBuffer.add("rep 002 -- cmd end\n");
                 LOG.debug("Client from {} authenticated as {}", usrSession.network.address, usrSession.user.login);
                 if (this.changeState != null) {
@@ -169,7 +193,8 @@ public class ExtUserLogCommandImpl implements Command {
                 }
             }
         } else {
-            usrSession.outputBuffer.add("rep 033 -- ext user identification fail\n");
+            usrSession.outputBuffer.add(String.format("rep 033 -- %s identification fail\n",
+                    (usrSession.authType == SessionAuthType.EXTERNAL_AUTHENTICATION) ? "ext user" : "user"));
         }
     }
 }

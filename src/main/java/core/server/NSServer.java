@@ -258,7 +258,7 @@ public class NSServer implements NIOEventListener {
                 }
                 final Command cmd = this.enabledCommands.get(payload[0]);
                 if (cmd != null) {
-                    if (cmd.canExecute(usrSess.stageLevel)) {
+                    if (cmd.canExecute(usrSess)) {
                         final int minArgs = cmd.getMinimalArgsCountNeeded();
                         final int maxArgs = cmd.getMaximalArgsCountNeeded();
                         if (payload.length >= minArgs && (maxArgs == -1 || payload.length <= maxArgs)) {

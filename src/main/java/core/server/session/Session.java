@@ -1,6 +1,5 @@
 package core.server.session;
 
-import core.Settings;
 import core.network.DisconnectReason;
 
 import java.time.Instant;
@@ -29,6 +28,11 @@ public class Session {
      * The current stage level of this user session.
      */
     public SessionStageLevel stageLevel;
+
+    /**
+     * The authentication type of this session
+     */
+    public SessionAuthType authType;
 
     /**
      * User information.

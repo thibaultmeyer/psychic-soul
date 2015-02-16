@@ -14,24 +14,13 @@ public enum SessionStageLevel {
     NOT_AUTHENTICATED,
 
     /**
-     * Request authentication outside of the PIE.
+     * User start the authentication process.
      */
-    EXTERNAL_AUTHENTICATION,
-
-    /**
-     * Request authentication from the PIE.
-     */
-    INTERNAL_AUTHENTICATION,
+    AUTHENTICATION_REQUESTED,
 
     /**
      * User is authenticated! It can send request to the server and send
      * messages to other authenticated users.
      */
     AUTHENTICATED,
-
-    /**
-     * User is authenticated from external location! It can send request to
-     * the server and send messages to other authenticated users.
-     */
-    AUTHENTICATED_EXTERNAL
 }

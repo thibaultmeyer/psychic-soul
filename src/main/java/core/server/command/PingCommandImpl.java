@@ -1,7 +1,6 @@
 package core.server.command;
 
 import core.server.session.Session;
-import core.server.session.SessionStageLevel;
 
 import java.util.Collection;
 import java.util.List;
@@ -50,13 +49,14 @@ public class PingCommandImpl implements Command {
     }
 
     /**
-     * Check if this command can by executed at given stage level.
+     * Check if this command can by executed by this user session.
      *
-     * @param usl The current user session stage level
+     * @param usrSession The current user session
      * @return {@code true} is the command can be executed, otherwise, {@code false}
+     * @since 1.1.0
      */
     @Override
-    public boolean canExecute(final SessionStageLevel usl) {
+    public boolean canExecute(final Session usrSession) {
         return true;
     }
 

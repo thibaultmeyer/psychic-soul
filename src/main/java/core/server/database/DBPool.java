@@ -12,7 +12,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * The role of the DBPool class is to provide an easy-to-use access to 
+ * The role of the DBPool class is to provide an easy-to-use access to
  * the SQL database connections.
  *
  * @author Thibault Meyer
@@ -20,7 +20,16 @@ import java.sql.SQLException;
  */
 public class DBPool {
 
+    /**
+     * Logger.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(DBPool.class.getName());
+
+    /**
+     * The data source.
+     *
+     * @see javax.sql.DataSource
+     */
     private DataSource dataSource;
 
     /**

@@ -142,7 +142,8 @@ public class NIOServer implements Runnable {
                         if (this.eventListener != null) {
                             try {
                                 nbWrite = this.eventListener.onWritableEvent(selector, client);
-                            } catch (IOException ignore) {
+                            } catch (IOException ex) {
+                                LOG.debug("Network Write error", ex);
                                 nbWrite = -1;
                             }
                         }

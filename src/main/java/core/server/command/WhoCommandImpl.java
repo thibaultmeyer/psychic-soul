@@ -1,6 +1,7 @@
 package core.server.command;
 
 import core.server.session.Session;
+import core.server.session.SessionAuthType;
 import core.server.session.SessionStageLevel;
 import core.server.toolbox.ListLoginParser;
 
@@ -52,14 +53,15 @@ public class WhoCommandImpl implements Command {
     }
 
     /**
-     * Check if this command can by executed at given stage level.
+     * Check if this command can by executed by this user session.
      *
-     * @param usl The current user session stage level
+     * @param usrSession The current user session
      * @return {@code true} is the command can be executed, otherwise, {@code false}
+     * @since 1.1.0
      */
     @Override
-    public boolean canExecute(final SessionStageLevel usl) {
-        return usl == SessionStageLevel.AUTHENTICATED || usl == SessionStageLevel.AUTHENTICATED_EXTERNAL;
+    public boolean canExecute(final Session usrSession) {
+        return usrSession.stageLevel == SessionStageLevel.AUTHENTICATED;
     }
 
     /**
@@ -77,7 +79,7 @@ public class WhoCommandImpl implements Command {
         final List<String> lstLoginToWho = ListLoginParser.parse(payload[1], connectedSessions);
         final long currentTimestamp = System.currentTimeMillis() / 1000;
         final String cmdHeader = String.format("%s %d:user:%d/%d:%s@%s:%s:%s:%s",
-                usrSession.stageLevel == SessionStageLevel.AUTHENTICATED_EXTERNAL ? "user_cmd" : "cmd",
+                (usrSession.authType == SessionAuthType.EXTERNAL_AUTHENTICATION) ? "user_cmd" : "cmd",
                 usrSession.network.fd,
                 usrSession.user.trustLevelClient,
                 usrSession.user.trustLevelUser,

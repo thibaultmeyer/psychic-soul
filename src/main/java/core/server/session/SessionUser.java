@@ -74,7 +74,7 @@ public class SessionUser {
     public SessionUser() {
         this.operatingSystem = "~";
         this.state = "connection";
-        this.trustLevelClient= 1;
+        this.trustLevelClient = 1;
         this.trustLevelUser = 3;
         this.stateModifiedAt = System.currentTimeMillis() / 1000;
     }

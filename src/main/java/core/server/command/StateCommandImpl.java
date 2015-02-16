@@ -1,6 +1,7 @@
 package core.server.command;
 
 import core.server.session.Session;
+import core.server.session.SessionAuthType;
 import core.server.session.SessionStageLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,7 @@ import java.util.Map;
  *     Args  : 1. new state (ie: actif:123456789) : timestamp is optional
  * </pre>
  * <p>
- *     In this implementation, timestamp sent by user is ignored.
+ * In this implementation, timestamp sent by user is ignored.
  * </p>
  *
  * @author Thibault Meyer
@@ -61,14 +62,15 @@ public class StateCommandImpl implements Command {
     }
 
     /**
-     * Check if this command can by executed at given stage level.
+     * Check if this command can by executed by this user session.
      *
-     * @param usl The current user session stage level
+     * @param usrSession The current user session
      * @return {@code true} is the command can be executed, otherwise, {@code false}
+     * @since 1.1.0
      */
     @Override
-    public boolean canExecute(final SessionStageLevel usl) {
-        return usl == SessionStageLevel.AUTHENTICATED || usl == SessionStageLevel.AUTHENTICATED_EXTERNAL;
+    public boolean canExecute(final Session usrSession) {
+        return usrSession.stageLevel == SessionStageLevel.AUTHENTICATED;
     }
 
     /**
@@ -108,7 +110,7 @@ public class StateCommandImpl implements Command {
                             usrSession.user.stateModifiedAt));
             for (Session s : toSendNotification) {
                 final String notifPacket = String.format("%s %s\n",
-                        s.stageLevel == SessionStageLevel.AUTHENTICATED_EXTERNAL ? "user_cmd" : "cmd",
+                        s.authType == SessionAuthType.EXTERNAL_AUTHENTICATION ? "user_cmd" : "cmd",
                         notifData);
                 s.outputBuffer.add(notifPacket);
                 s.network.registerWriteEvent();
