@@ -12,6 +12,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <timestamp>${maven.build.timestamp}</timestamp>
+        <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:sszzz</maven.build.timestamp.format>
     </properties>
 
     <build>
@@ -116,11 +118,13 @@
         </plugins>
         <resources>
             <resource>
+                <filtering>true</filtering>
                 <directory>src/main/resources</directory>
             </resource>
         </resources>
         <testResources>
             <testResource>
+                <filtering>true</filtering>
                 <directory>src/test/resources</directory>
             </testResource>
         </testResources>
