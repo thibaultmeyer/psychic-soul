@@ -2,6 +2,7 @@ package core.server.command;
 
 import core.server.session.Session;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -72,5 +73,6 @@ public class PingCommandImpl implements Command {
      */
     @Override
     public void execute(final String[] payload, final Session usrSession, final Collection<Session> connectedSessions, final Map<String, List<Session>> globalFollowers) throws ArrayIndexOutOfBoundsException {
+        usrSession.lastPingReceived = Instant.now();
     }
 }

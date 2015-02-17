@@ -297,6 +297,18 @@ public class NSServer implements NIOEventListener {
                     usrSess.outputBuffer.add(String.format("ping %d\n", lastSockActivity.plusSeconds(Settings.socketTTL).minusSeconds(currentInstant.getEpochSecond()).getEpochSecond()));
                     usrSess.network.registerWriteEvent();
                     usrSess.lastPingSent = currentInstant.plusMillis(Settings.socketTTL * 800);
+                    if (currentInstant.isAfter(usrSess.lastPingReceived.plusSeconds(Settings.socketTTL * 2))) {
+                        LOG.warn("Set client {} ({}) eligible to the disconnection process",
+                                usrSess.network.address,
+                                (usrSess.user.login == null) ? "<not_authenticated>" : usrSess.user.login);
+                        usrSess.disconnectReason = DisconnectReason.NO_ACTIVITY;
+                    }
+                } else if (lastSockActivity == null) {
+                    LOG.warn("Gnarf! Where is the client {} ({}) ?",
+                            usrSess.network.address,
+                            (usrSess.user.login == null) ? "<not_authenticated>" : usrSess.user.login);
+                    usrSess.disconnectReason = DisconnectReason.NO_ACTIVITY;
+                    this.onDisconnected(usrSess.network.socket, DisconnectReason.NO_ACTIVITY);
                 }
             }
         }

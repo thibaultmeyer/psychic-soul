@@ -60,6 +60,11 @@ public class Session {
     public Instant lastPingSent;
 
     /**
+     * When the last ping was received from the connected client
+     */
+    public Instant lastPingReceived;
+
+    /**
      * Default constructor.
      */
     public Session() {
@@ -69,6 +74,7 @@ public class Session {
         this.inputBuffer = new ArrayList<String>();
         this.outputBuffer = new ArrayList<String>();
         this.lastPingSent = Instant.now();
+        this.lastPingReceived = Instant.now();
     }
 
     /**
