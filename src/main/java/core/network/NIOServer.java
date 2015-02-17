@@ -10,6 +10,7 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.time.Instant;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.*;
 
 /**
@@ -40,8 +41,8 @@ public class NIOServer implements Runnable {
         this.eventListener = event_listener;
         this.socketListenPort = listen_port;
         this.selectTimeout = select_timeout;
-        this.connectedSocket = new HashMap<SocketChannel, Instant>();
-        this.toDisconnectSocket = new HashMap<SocketChannel, DisconnectReason>();
+        this.connectedSocket = new ConcurrentHashMap<SocketChannel, Instant>();
+        this.toDisconnectSocket = new ConcurrentHashMap<SocketChannel, DisconnectReason>();
         this.socketTTL = 15;
         this.socketMaxConn = 50;
     }
