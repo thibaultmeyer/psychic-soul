@@ -80,10 +80,11 @@ public class ListUsersCommandImpl implements Command {
      */
     @Override
     public void execute(final String[] payload, final Session usrSession, final Collection<Session> connectedSessions, final Map<String, List<Session>> globalFollowers) throws ArrayIndexOutOfBoundsException {
-        final List<String> filterLogin = (payload.length == 2) ? ListLoginParser.parse(payload[1], connectedSessions) : null;
+        //TODO: add filtering by file descriptor
+        final List<Session> filterSession = (payload.length == 2) ? ListLoginParser.parseToSession(payload[1], connectedSessions) : null;
         usrSession.outputBuffer.addAll(connectedSessions.stream()
                 .filter(us -> us.user.login != null)
-                .filter(us -> (filterLogin == null) || filterLogin.contains(us.user.login))
+                .filter(us -> (filterSession == null) || filterSession.contains(us))
                 .map(us -> String.format(ListUsersCommandImpl.LIST_USERS_FORMAT,
                         us.network.fd,
                         us.user.login,

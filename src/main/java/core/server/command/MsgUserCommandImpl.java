@@ -85,7 +85,7 @@ public class MsgUserCommandImpl implements Command {
      */
     @Override
     public void execute(final String[] payload, final Session usrSession, final Collection<Session> connectedSessions, final Map<String, List<Session>> globalFollowers) throws ArrayIndexOutOfBoundsException {
-        final List<String> lstLoginDest = ListLoginParser.parse(payload[1], connectedSessions);
+        final List<Session> lstSessDest = ListLoginParser.parseToSession(payload[1], connectedSessions);
         final String cmdHeader = String.format("%s %d:user:%d/%d:%s@%s:%s:%s:ext",
                 (usrSession.authType == SessionAuthType.EXTERNAL_AUTHENTICATION) ? "user_cmd" : "cmd",
                 usrSession.network.fd,
@@ -95,7 +95,8 @@ public class MsgUserCommandImpl implements Command {
                 usrSession.network.ip,
                 usrSession.user.operatingSystem,
                 usrSession.user.location);
-        connectedSessions.stream().filter(s -> s.user.login != null && lstLoginDest.contains(s.user.login)).forEach(s -> {
+
+        for (final Session s : lstSessDest) {
             if (payload[2].compareToIgnoreCase("msg") == 0) {
                 if (LOG.isTraceEnabled()) {
                     LOG.trace(String.format("Client from %s (%s) send message to %s (%s): %s",
@@ -113,6 +114,6 @@ public class MsgUserCommandImpl implements Command {
                 s.outputBuffer.add(cmdFormat);
             }
             s.network.registerWriteEvent();
-        });
+        }
     }
 }

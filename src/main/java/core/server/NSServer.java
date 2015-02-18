@@ -298,9 +298,11 @@ public class NSServer implements NIOEventListener {
                     usrSess.network.registerWriteEvent();
                     usrSess.lastPingSent = currentInstant.plusMillis(Settings.socketTTL * 800);
                 } else if (lastSockActivity == null) {
-                    LOG.warn("Gnarf! Where is the client {} ({}) ?",
-                            usrSess.network.address,
-                            (usrSess.user.login == null) ? "<not_authenticated>" : usrSess.user.login);
+                    LOG.warn("Gnarf! Where is the client {}",
+                            String.format("%s (%s)",
+                                    usrSess.network.address,
+                                    (usrSess.user.login == null) ? "<not_authenticated>" : usrSess.user.login),
+                            usrSess.network.socket.hashCode());
                     this.nioServer.addToDisconnect(usrSess.network.socket, DisconnectReason.NO_ACTIVITY);
                 }
             }
@@ -323,7 +325,7 @@ public class NSServer implements NIOEventListener {
                 cmdState.execute((String[]) Arrays.asList("logout", "offline").toArray(), usrSess, this.connectedUserSessions.values(), this.globalFollowers);
             }
             this.globalFollowers.values().stream().forEach(gf -> gf.remove(usrSess));
-            this.connectedUserSessions.remove(socket.hashCode());
         }
+        this.connectedUserSessions.remove(socket.hashCode());
     }
 }

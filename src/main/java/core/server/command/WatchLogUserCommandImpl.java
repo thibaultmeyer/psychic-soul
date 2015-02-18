@@ -88,7 +88,7 @@ public class WatchLogUserCommandImpl implements Command {
      */
     @Override
     public void execute(final String[] payload, final Session usrSession, final Collection<Session> connectedSessions, final Map<String, List<Session>> globalFollowers) throws ArrayIndexOutOfBoundsException {
-        final List<String> lstLoginListen = ListLoginParser.parse(payload[1], connectedSessions);
+        final List<String> lstLoginListen = ListLoginParser.parseToLogin(payload[1], connectedSessions);
         final Connection dbConn = DBPool.getInstance().getSQLConnection();
         try {
             int i = 0;

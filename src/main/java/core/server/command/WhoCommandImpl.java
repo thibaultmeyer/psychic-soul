@@ -76,7 +76,7 @@ public class WhoCommandImpl implements Command {
      */
     @Override
     public void execute(final String[] payload, final Session usrSession, final Collection<Session> connectedSessions, final Map<String, List<Session>> globalFollowers) throws ArrayIndexOutOfBoundsException {
-        final List<String> lstLoginToWho = ListLoginParser.parse(payload[1], connectedSessions);
+        final List<Session> lsSessionToWho = ListLoginParser.parseToSession(payload[1], connectedSessions);
         final long currentTimestamp = System.currentTimeMillis() / 1000;
         final String cmdHeader = String.format("%s %d:user:%d/%d:%s@%s:%s:%s:%s",
                 (usrSession.authType == SessionAuthType.EXTERNAL_AUTHENTICATION) ? "user_cmd" : "cmd",
@@ -88,7 +88,7 @@ public class WhoCommandImpl implements Command {
                 usrSession.user.operatingSystem,
                 usrSession.user.location,
                 usrSession.user.group);
-        connectedSessions.stream().filter(s -> s.user.login != null && lstLoginToWho.contains(s.user.login)).forEach(s -> {
+        for (final Session s : lsSessionToWho) {
             final String cmdFormat = String.format("%s | who %d %s %s %d %d %d %d %s %s %s %s:%d %s\n",
                     cmdHeader,
                     s.network.fd,
@@ -105,7 +105,7 @@ public class WhoCommandImpl implements Command {
                     s.user.stateModifiedAt,
                     s.user.clientName);
             usrSession.outputBuffer.add(cmdFormat);
-        });
+        }
         usrSession.outputBuffer.add(String.format("%s | who rep 002 -- cmd end\n", cmdHeader));
     }
 }
