@@ -10,8 +10,11 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.time.Instant;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.*;
 
 /**
  * Non blocking socket server using Java NIO.
@@ -58,7 +61,6 @@ public class NIOServer implements Runnable {
             }
         });
 
-        // Can't use Java 1.8 lambda here because this forloop modify the HashMap
         for (Map.Entry<SocketChannel, DisconnectReason> entry : this.toDisconnectSocket.entrySet()) {
             try {
                 SocketChannel socket = entry.getKey();
@@ -110,12 +112,12 @@ public class NIOServer implements Runnable {
                     if (key.isAcceptable()) {
                         SocketChannel client = serverSocketChannel.accept();
                         LOG.debug("New client connected from {}", client.getRemoteAddress());
-                        if (connectedSocket.size() >= this.socketMaxConn) {
+                        if (this.connectedSocket.size() >= this.socketMaxConn) {
                             this.toDisconnectSocket.put(client, DisconnectReason.TOO_MANY_CLIENTS);
                         } else {
                             client.configureBlocking(false);
                             client.register(selector, SelectionKey.OP_READ);
-                            connectedSocket.put(client, Instant.now());
+                            this.connectedSocket.put(client, Instant.now());
                             if (this.eventListener != null) {
                                 try {
                                     this.eventListener.onAcceptableEvent(selector, client);
@@ -126,7 +128,7 @@ public class NIOServer implements Runnable {
                     } else if (key.isReadable()) {
                         SocketChannel client = (SocketChannel) key.channel();
                         int nbRead = -1;
-                        connectedSocket.put(client, Instant.now());
+                        this.connectedSocket.put(client, Instant.now());
                         if (this.eventListener != null) {
                             try {
                                 nbRead = this.eventListener.onReadableEvent(selector, client);
@@ -135,7 +137,7 @@ public class NIOServer implements Runnable {
                             }
                         }
                         if (nbRead == -1) {
-                            toDisconnectSocket.put(client, DisconnectReason.CLIENT_GONE_AWAY);
+                            this.toDisconnectSocket.put(client, DisconnectReason.CLIENT_GONE_AWAY);
                         }
                     } else if (key.isWritable()) {
                         SocketChannel client = (SocketChannel) key.channel();
@@ -143,12 +145,13 @@ public class NIOServer implements Runnable {
                         if (this.eventListener != null) {
                             try {
                                 nbWrite = this.eventListener.onWritableEvent(selector, client);
-                            } catch (IOException ignore) {
+                            } catch (IOException ex) {
+                                LOG.debug("Network Write error", ex);
                                 nbWrite = -1;
                             }
                         }
                         if (nbWrite == -1) {
-                            toDisconnectSocket.put(client, DisconnectReason.CLIENT_GONE_AWAY);
+                            this.toDisconnectSocket.put(client, DisconnectReason.CLIENT_GONE_AWAY);
                         }
                     }
                     keyIterator.remove();
@@ -156,12 +159,14 @@ public class NIOServer implements Runnable {
                 if (this.eventListener != null) {
                     try {
                         this.eventListener.onFinalize(selector);
-                    } catch (IOException ignore) {
+                    } catch (IOException ex) {
+                        LOG.warn("Error on onFinalize() callback", ex);
                     }
                 }
                 try {
-                    __checkSocketToDisconnect();
-                } catch (ConcurrentModificationException ignore) {
+                    this.__checkSocketToDisconnect();
+                } catch (ConcurrentModificationException ex) {
+                    LOG.warn("Concurrent modification detected!", ex);
                 }
             }
         } catch (IOException e) {

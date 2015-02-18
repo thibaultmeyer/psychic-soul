@@ -258,7 +258,7 @@ public class NSServer implements NIOEventListener {
                 }
                 final Command cmd = this.enabledCommands.get(payload[0]);
                 if (cmd != null) {
-                    if (cmd.canExecute(usrSess.stageLevel)) {
+                    if (cmd.canExecute(usrSess)) {
                         final int minArgs = cmd.getMinimalArgsCountNeeded();
                         final int maxArgs = cmd.getMaximalArgsCountNeeded();
                         if (payload.length >= minArgs && (maxArgs == -1 || payload.length <= maxArgs)) {
@@ -297,6 +297,13 @@ public class NSServer implements NIOEventListener {
                     usrSess.outputBuffer.add(String.format("ping %d\n", lastSockActivity.plusSeconds(Settings.socketTTL).minusSeconds(currentInstant.getEpochSecond()).getEpochSecond()));
                     usrSess.network.registerWriteEvent();
                     usrSess.lastPingSent = currentInstant.plusMillis(Settings.socketTTL * 800);
+                } else if (lastSockActivity == null) {
+                    LOG.warn("Gnarf! Where is the client {}",
+                            String.format("%s (%s)",
+                                    usrSess.network.address,
+                                    (usrSess.user.login == null) ? "<not_authenticated>" : usrSess.user.login),
+                            usrSess.network.socket.hashCode());
+                    this.nioServer.addToDisconnect(usrSess.network.socket, DisconnectReason.NO_ACTIVITY);
                 }
             }
         }
@@ -318,7 +325,7 @@ public class NSServer implements NIOEventListener {
                 cmdState.execute((String[]) Arrays.asList("logout", "offline").toArray(), usrSess, this.connectedUserSessions.values(), this.globalFollowers);
             }
             this.globalFollowers.values().stream().forEach(gf -> gf.remove(usrSess));
-            this.connectedUserSessions.remove(socket.hashCode());
         }
+        this.connectedUserSessions.remove(socket.hashCode());
     }
 }

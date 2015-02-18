@@ -1,6 +1,7 @@
 package core.server.command;
 
 import core.server.session.Session;
+import core.server.session.SessionAuthType;
 import core.server.session.SessionStageLevel;
 import core.server.toolbox.ListLoginParser;
 
@@ -52,14 +53,15 @@ public class WhoCommandImpl implements Command {
     }
 
     /**
-     * Check if this command can by executed at given stage level.
+     * Check if this command can by executed by this user session.
      *
-     * @param usl The current user session stage level
+     * @param usrSession The current user session
      * @return {@code true} is the command can be executed, otherwise, {@code false}
+     * @since 1.1.0
      */
     @Override
-    public boolean canExecute(final SessionStageLevel usl) {
-        return usl == SessionStageLevel.AUTHENTICATED || usl == SessionStageLevel.AUTHENTICATED_EXTERNAL;
+    public boolean canExecute(final Session usrSession) {
+        return usrSession.stageLevel == SessionStageLevel.AUTHENTICATED;
     }
 
     /**
@@ -74,10 +76,10 @@ public class WhoCommandImpl implements Command {
      */
     @Override
     public void execute(final String[] payload, final Session usrSession, final Collection<Session> connectedSessions, final Map<String, List<Session>> globalFollowers) throws ArrayIndexOutOfBoundsException {
-        final List<String> lstLoginToWho = ListLoginParser.parse(payload[1], connectedSessions);
+        final List<Session> lsSessionToWho = ListLoginParser.parseToSession(payload[1], connectedSessions);
         final long currentTimestamp = System.currentTimeMillis() / 1000;
         final String cmdHeader = String.format("%s %d:user:%d/%d:%s@%s:%s:%s:%s",
-                usrSession.stageLevel == SessionStageLevel.AUTHENTICATED_EXTERNAL ? "user_cmd" : "cmd",
+                (usrSession.authType == SessionAuthType.EXTERNAL_AUTHENTICATION) ? "user_cmd" : "cmd",
                 usrSession.network.fd,
                 usrSession.user.trustLevelClient,
                 usrSession.user.trustLevelUser,
@@ -86,7 +88,7 @@ public class WhoCommandImpl implements Command {
                 usrSession.user.operatingSystem,
                 usrSession.user.location,
                 usrSession.user.group);
-        connectedSessions.stream().filter(s -> s.user.login != null && lstLoginToWho.contains(s.user.login)).forEach(s -> {
+        for (final Session s : lsSessionToWho) {
             final String cmdFormat = String.format("%s | who %d %s %s %d %d %d %d %s %s %s %s:%d %s\n",
                     cmdHeader,
                     s.network.fd,
@@ -103,7 +105,7 @@ public class WhoCommandImpl implements Command {
                     s.user.stateModifiedAt,
                     s.user.clientName);
             usrSession.outputBuffer.add(cmdFormat);
-        });
+        }
         usrSession.outputBuffer.add(String.format("%s | who rep 002 -- cmd end\n", cmdHeader));
     }
 }

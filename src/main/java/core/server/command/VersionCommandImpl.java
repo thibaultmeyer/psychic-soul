@@ -2,21 +2,23 @@ package core.server.command;
 
 import core.server.session.Session;
 
-import java.time.Instant;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
- * Ping.
+ * Get the version of the server.
  * <pre>
- *     OpCode: ping
+ *     OpCode: version
  * </pre>
  *
  * @author Thibault Meyer
- * @since 1.0.0
+ * @since 1.1.0
  */
-public class PingCommandImpl implements Command {
+public class VersionCommandImpl implements Command {
 
     /**
      * Get the minimal number of arguments needed. The command OpCode is
@@ -36,7 +38,7 @@ public class PingCommandImpl implements Command {
      * @return The maximal number of arguments needed
      */
     public int getMaximalArgsCountNeeded() {
-        return 2;
+        return 1;
     }
 
     /**
@@ -73,6 +75,20 @@ public class PingCommandImpl implements Command {
      */
     @Override
     public void execute(final String[] payload, final Session usrSession, final Collection<Session> connectedSessions, final Map<String, List<Session>> globalFollowers) throws ArrayIndexOutOfBoundsException {
-        usrSession.lastPingReceived = Instant.now();
+        final InputStream fis = VersionCommandImpl.class.getResourceAsStream("/version.properties");
+        try {
+            final Properties properties = new Properties();
+            properties.load(fis);
+            usrSession.outputBuffer.add(String.format("%s %s %s\n",
+                    properties.getOrDefault("MAVEN_PROJECT_NAME", "psychic-soul"),
+                    properties.getOrDefault("MAVEN_PROJECT_VERSION", "0.0.0"),
+                    properties.getOrDefault("MAVEN_PROJECT_BUILD", "1970-01-01T00:00:00CET")));
+        } catch (IOException ignore) {
+            usrSession.outputBuffer.add(String.format("psychic-soul 0.0.0 %s\n", "1970-01-01T00:00:00CET"));
+        }
+        try {
+            fis.close();
+        } catch (IOException ignore) {
+        }
     }
 }

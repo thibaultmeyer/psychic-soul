@@ -1,6 +1,7 @@
 package core.server.command;
 
 import core.server.session.Session;
+import core.server.session.SessionAuthType;
 import core.server.session.SessionStageLevel;
 import core.server.toolbox.ListLoginParser;
 import org.slf4j.Logger;
@@ -61,14 +62,15 @@ public class MsgUserCommandImpl implements Command {
     }
 
     /**
-     * Check if this command can by executed at given stage level.
+     * Check if this command can by executed by this user session.
      *
-     * @param usl The current user session stage level
+     * @param usrSession The current user session
      * @return {@code true} is the command can be executed, otherwise, {@code false}
+     * @since 1.1.0
      */
     @Override
-    public boolean canExecute(final SessionStageLevel usl) {
-        return usl == SessionStageLevel.AUTHENTICATED || usl == SessionStageLevel.AUTHENTICATED_EXTERNAL;
+    public boolean canExecute(final Session usrSession) {
+        return usrSession.stageLevel == SessionStageLevel.AUTHENTICATED;
     }
 
     /**
@@ -83,9 +85,9 @@ public class MsgUserCommandImpl implements Command {
      */
     @Override
     public void execute(final String[] payload, final Session usrSession, final Collection<Session> connectedSessions, final Map<String, List<Session>> globalFollowers) throws ArrayIndexOutOfBoundsException {
-        final List<String> lstLoginDest = ListLoginParser.parse(payload[1], connectedSessions);
+        final List<Session> lstSessDest = ListLoginParser.parseToSession(payload[1], connectedSessions);
         final String cmdHeader = String.format("%s %d:user:%d/%d:%s@%s:%s:%s:ext",
-                usrSession.stageLevel == SessionStageLevel.AUTHENTICATED_EXTERNAL ? "user_cmd" : "cmd",
+                (usrSession.authType == SessionAuthType.EXTERNAL_AUTHENTICATION) ? "user_cmd" : "cmd",
                 usrSession.network.fd,
                 usrSession.user.trustLevelClient,
                 usrSession.user.trustLevelUser,
@@ -93,7 +95,8 @@ public class MsgUserCommandImpl implements Command {
                 usrSession.network.ip,
                 usrSession.user.operatingSystem,
                 usrSession.user.location);
-        connectedSessions.stream().filter(s -> s.user.login != null && lstLoginDest.contains(s.user.login)).forEach(s -> {
+
+        for (final Session s : lstSessDest) {
             if (payload[2].compareToIgnoreCase("msg") == 0) {
                 if (LOG.isTraceEnabled()) {
                     LOG.trace(String.format("Client from %s (%s) send message to %s (%s): %s",
@@ -111,6 +114,6 @@ public class MsgUserCommandImpl implements Command {
                 s.outputBuffer.add(cmdFormat);
             }
             s.network.registerWriteEvent();
-        });
+        }
     }
 }

@@ -1,6 +1,7 @@
 package core.server.command;
 
 import core.server.session.Session;
+import core.server.session.SessionAuthType;
 import core.server.session.SessionStageLevel;
 
 import java.util.Collection;
@@ -53,14 +54,15 @@ public class AuthAgCommandImpl implements Command {
     }
 
     /**
-     * Check if this command can by executed at given stage level.
+     * Check if this command can by executed by this user session.
      *
-     * @param usl The current user session stage level
+     * @param usrSession The current user session
      * @return {@code true} is the command can be executed, otherwise, {@code false}
+     * @since 1.1.0
      */
     @Override
-    public boolean canExecute(final SessionStageLevel usl) {
-        return usl == SessionStageLevel.NOT_AUTHENTICATED;
+    public boolean canExecute(final Session usrSession) {
+        return usrSession.stageLevel == SessionStageLevel.NOT_AUTHENTICATED;
     }
 
     /**
@@ -76,13 +78,15 @@ public class AuthAgCommandImpl implements Command {
     @Override
     public void execute(final String[] payload, final Session usrSession, final Collection<Session> connectedSessions, final Map<String, List<Session>> globalFollowers) throws ArrayIndexOutOfBoundsException {
         if (payload[1].compareTo("ext_user") == 0) {
-            usrSession.stageLevel = SessionStageLevel.EXTERNAL_AUTHENTICATION;
+            usrSession.stageLevel = SessionStageLevel.AUTHENTICATION_REQUESTED;
+            usrSession.authType = SessionAuthType.EXTERNAL_AUTHENTICATION;
             usrSession.user.trustLevelClient = 3;
             usrSession.user.trustLevelUser = 1;
             usrSession.outputBuffer.add("rep 002 -- cmd end\n");
         } else if (payload[1].compareTo("user") == 0) {
             if (payload[2].compareTo("none") != 0) {
-                usrSession.stageLevel = SessionStageLevel.INTERNAL_AUTHENTICATION;
+                usrSession.stageLevel = SessionStageLevel.AUTHENTICATION_REQUESTED;
+                usrSession.authType = SessionAuthType.INTERNAL_AUTHENTICATION;
                 usrSession.user.trustLevelClient = 1;
                 usrSession.user.trustLevelUser = 3;
                 usrSession.outputBuffer.add("rep 002 -- cmd end\n");

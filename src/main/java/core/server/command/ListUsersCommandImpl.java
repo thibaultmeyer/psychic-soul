@@ -1,7 +1,6 @@
 package core.server.command;
 
 import core.server.session.Session;
-import core.server.session.SessionStageLevel;
 import core.server.toolbox.ListLoginParser;
 
 import java.util.Collection;
@@ -58,13 +57,14 @@ public class ListUsersCommandImpl implements Command {
     }
 
     /**
-     * Check if this command can by executed at given stage level.
+     * Check if this command can by executed by this user session.
      *
-     * @param usl The current user session stage level
+     * @param usrSession The current user session
      * @return {@code true} is the command can be executed, otherwise, {@code false}
+     * @since 1.1.0
      */
     @Override
-    public boolean canExecute(final SessionStageLevel usl) {
+    public boolean canExecute(final Session usrSession) {
         return true;
     }
 
@@ -80,10 +80,10 @@ public class ListUsersCommandImpl implements Command {
      */
     @Override
     public void execute(final String[] payload, final Session usrSession, final Collection<Session> connectedSessions, final Map<String, List<Session>> globalFollowers) throws ArrayIndexOutOfBoundsException {
-        final List<String> filterLogin = (payload.length == 2) ? ListLoginParser.parse(payload[1], connectedSessions) : null;
+        final List<Session> filterSession = (payload.length == 2) ? ListLoginParser.parseToSession(payload[1], connectedSessions) : null;
         usrSession.outputBuffer.addAll(connectedSessions.stream()
                 .filter(us -> us.user.login != null)
-                .filter(us -> (filterLogin == null) || filterLogin.contains(us.user.login))
+                .filter(us -> (filterSession == null) || filterSession.contains(us))
                 .map(us -> String.format(ListUsersCommandImpl.LIST_USERS_FORMAT,
                         us.network.fd,
                         us.user.login,

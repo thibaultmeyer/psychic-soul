@@ -11,7 +11,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Set callback to listen events from some user.
@@ -62,14 +65,15 @@ public class WatchLogUserCommandImpl implements Command {
     }
 
     /**
-     * Check if this command can by executed at given stage level.
+     * Check if this command can by executed by this user session.
      *
-     * @param usl The current user session stage level
+     * @param usrSession The current user session
      * @return {@code true} is the command can be executed, otherwise, {@code false}
+     * @since 1.1.0
      */
     @Override
-    public boolean canExecute(final SessionStageLevel usl) {
-        return usl == SessionStageLevel.AUTHENTICATED || usl == SessionStageLevel.AUTHENTICATED_EXTERNAL;
+    public boolean canExecute(final Session usrSession) {
+        return usrSession.stageLevel == SessionStageLevel.AUTHENTICATED;
     }
 
     /**
@@ -84,7 +88,7 @@ public class WatchLogUserCommandImpl implements Command {
      */
     @Override
     public void execute(final String[] payload, final Session usrSession, final Collection<Session> connectedSessions, final Map<String, List<Session>> globalFollowers) throws ArrayIndexOutOfBoundsException {
-        final List<String> lstLoginListen = ListLoginParser.parse(payload[1], connectedSessions);
+        final List<String> lstLoginListen = ListLoginParser.parseToLogin(payload[1], connectedSessions);
         final Connection dbConn = DBPool.getInstance().getSQLConnection();
         try {
             int i = 0;
@@ -108,7 +112,16 @@ public class WatchLogUserCommandImpl implements Command {
             } catch (SQLException ignore) {
             }
         }
-
+        
+        /*
+        // DISABLE TO BE COMPLIANT WITH SOME CLIENTS
+        // ENABLE TO BE RFC COMPLIANT
+        for (final List<Session> followers : globalFollowers.values()) {
+            if (followers.contains(usrSession)) {
+                followers.remove(usrSession);
+            }
+        }
+        */
         for (final String login : lstLoginListen) {
             globalFollowers.putIfAbsent(login, new ArrayList<Session>());
             if (!globalFollowers.get(login).contains(usrSession)) {
