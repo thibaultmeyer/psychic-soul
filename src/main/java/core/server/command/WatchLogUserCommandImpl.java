@@ -112,7 +112,16 @@ public class WatchLogUserCommandImpl implements Command {
             } catch (SQLException ignore) {
             }
         }
-
+        
+        /*
+        // DISABLE TO BE COMPLIANT WITH SOME CLIENTS
+        // ENABLE TO BE RFC COMPLIANT
+        for (final List<Session> followers : globalFollowers.values()) {
+            if (followers.contains(usrSession)) {
+                followers.remove(usrSession);
+            }
+        }
+        */
         for (final String login : lstLoginListen) {
             globalFollowers.putIfAbsent(login, new ArrayList<Session>());
             if (!globalFollowers.get(login).contains(usrSession)) {
