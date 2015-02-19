@@ -117,7 +117,7 @@ public class UserLogCommandImpl implements Command {
         final Connection dbConn = DBPool.getInstance().getSQLConnection();
         try {
             if (Settings.databaseBuiltIntFunction) {
-                final PreparedStatement reqPrepStatement = dbConn.prepareStatement("SELECT `group` FROM `ns_account` WHERE `ns_account`.`username` LIKE ? AND MD5(CONCAT(?, '-', ?, '/', ?, `ns_account`.`password`)) LIKE ? AND `ns_account`.`is_active`=1LIMIT 1");
+                final PreparedStatement reqPrepStatement = dbConn.prepareStatement("SELECT `group` FROM `ns_account` WHERE `ns_account`.`username` LIKE ? AND MD5(CONCAT(?, '-', ?, '/', ?, `ns_account`.`password`)) LIKE ? AND `ns_account`.`is_active`=1 LIMIT 1");
                 reqPrepStatement.setString(1, payload[1]);
                 reqPrepStatement.setString(2, usrSession.hash);
                 reqPrepStatement.setString(3, usrSession.network.ip);
