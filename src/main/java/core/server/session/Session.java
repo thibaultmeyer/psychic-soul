@@ -84,10 +84,12 @@ public class Session {
      */
     public String[] getNextPayload() {
         String payload = "";
+        boolean nextPayloadFound = false;
 
         while (!this.inputBuffer.isEmpty()) {
             final String data = this.inputBuffer.remove(0);
             if (data.contains("\n")) {
+                nextPayloadFound = true;
                 payload += data.substring(0, data.indexOf('\n'));
                 if (data.length() != (data.indexOf('\n') + 1)) {
                     this.inputBuffer.add(0, data.substring(data.indexOf('\n') + 1));
@@ -96,6 +98,10 @@ public class Session {
             } else {
                 payload += data;
             }
+        }
+        if (!nextPayloadFound) {
+            this.inputBuffer.add(0, payload);
+            return null;
         }
         return payload.isEmpty() ? null : payload.trim().split("\\s+");
     }

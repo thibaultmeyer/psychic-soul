@@ -41,7 +41,7 @@ public class NSServer implements NIOEventListener {
     /**
      * Incoming data buffer size.
      */
-    private static final int BYTEBUFFER_SIZE = 512;
+    private static final int BYTEBUFFER_SIZE = 10;
 
     /**
      * NIO Server instance.
@@ -175,16 +175,18 @@ public class NSServer implements NIOEventListener {
         final ByteBuffer buffer = ByteBuffer.allocate(NSServer.BYTEBUFFER_SIZE);
         int nbRead;
 
-        while ((nbRead = socket.read(buffer)) > 0) {
+        nbRead = socket.read(buffer);
+        if (nbRead > 0) {
             buffer.flip();
             while (buffer.hasRemaining()) {
-                final byte[] tmpBuffer = new byte[nbRead > NSServer.BYTEBUFFER_SIZE ? NSServer.BYTEBUFFER_SIZE : nbRead];
+                final byte[] tmpBuffer = new byte[nbRead >= NSServer.BYTEBUFFER_SIZE ? NSServer.BYTEBUFFER_SIZE : nbRead];
                 buffer.get(tmpBuffer);
                 final String tmpBufferCleaned = new String(tmpBuffer, "UTF-8");
                 usrSess.inputBuffer.add(tmpBufferCleaned.replaceAll("\\p{Cc}\\p{Cf}\\p{Co}\\p{Cn}", "?").replace("\r", ""));
             }
             buffer.clear();
         }
+
         return nbRead;
     }
 
@@ -198,21 +200,21 @@ public class NSServer implements NIOEventListener {
      */
     @Override
     public int onWritableEvent(Selector selector, SocketChannel socket) throws IOException {
-        int nbByteWritten = 0;
         final Session usrSess = this.connectedUserSessions.get(socket.hashCode());
-
+        int nbByteWritten = 0;
         try {
-            while (!usrSess.outputBuffer.isEmpty()) {
+            if (!usrSess.outputBuffer.isEmpty()) {
                 final String data = usrSess.outputBuffer.remove(0);
                 final int dataSize = data.length();
-                final int tmpByteWritten = socket.write(ByteBuffer.wrap(data.getBytes()));
-                nbByteWritten += tmpByteWritten;
-                if (tmpByteWritten != dataSize) {
-                    usrSess.outputBuffer.add(0, data.substring(tmpByteWritten));
+                nbByteWritten = socket.write(ByteBuffer.wrap(data.getBytes()));
+                if (nbByteWritten != dataSize) {
+                    usrSess.outputBuffer.add(0, data.substring(nbByteWritten));
                     throw new RuntimeException("Data partially sent");
                 }
             }
-            usrSess.network.unregisterWriteEvent();
+            if (usrSess.outputBuffer.isEmpty()) {
+                usrSess.network.unregisterWriteEvent();
+            }
         } catch (RuntimeException ignore) {
         }
         if (usrSess.disconnectReason != null && usrSess.network.socket != null) {
