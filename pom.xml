@@ -91,6 +91,13 @@
                                         <include>log4j.xml</include>
                                     </includes>
                                 </resource>
+                                <resource>
+                                    <directory>docs/</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>jaas.conf</include>
+                                    </includes>
+                                </resource>
                             </resources>
                         </configuration>
                     </execution>

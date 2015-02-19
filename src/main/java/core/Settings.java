@@ -67,6 +67,36 @@ public final class Settings {
     public static Integer cfgMaxSessionPerLogin;
 
     /**
+     * Kerberos 5 Debug mode
+     */
+    public static Boolean krb5Debug;
+
+    /**
+     * Kerberos 5 OID
+     */
+    public static String krb5Oid;
+
+    /**
+     * Kerberos 5 Realm
+     */
+    public static String krb5Realm;
+
+    /**
+     * Kerberos 5 KDC
+     */
+    public static String krb5Kdc;
+
+    /**
+     * Kerberos 5 Password
+     */
+    public static String krb5Password;
+
+    /**
+     * Kerberos 5 JAAS configuration file.
+     */
+    public static String krb5JaasFile;
+
+    /**
      * Static constructor.
      */
     static {
@@ -93,6 +123,12 @@ public final class Settings {
             Settings.databasePassword = properties.getProperty("server.database.password", null);
             Settings.databaseBuiltIntFunction = Boolean.valueOf(properties.getProperty("server.database.usebuiltin", "false"));
             Settings.cfgMaxSessionPerLogin = Integer.valueOf(properties.getProperty("server.config.max_sess_per_login"));
+            Settings.krb5Debug = Boolean.valueOf(properties.getProperty("server.auth.krb5.debug", "false"));
+            Settings.krb5Oid = properties.getProperty("server.auth.krb5.oid", null);
+            Settings.krb5Realm = properties.getProperty("server.auth.krb5.realm", null);
+            Settings.krb5Kdc = properties.getProperty("server.auth.krb5.kdc", null);
+            Settings.krb5Password = properties.getProperty("server.auth.krb5.password", null);
+            Settings.krb5JaasFile = properties.getProperty("server.auth.krb5.jaasfile", null);
         } catch (NumberFormatException e) {
             LOG.error("Can't parse settings file", e);
         } catch (Throwable e) {
