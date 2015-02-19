@@ -6,6 +6,7 @@ import core.server.session.SessionStageLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -86,13 +87,24 @@ public class StateCommandImpl implements Command {
     @Override
     public void execute(final String[] payload, final Session usrSession, final Collection<Session> connectedSessions, final Map<String, List<Session>> globalFollowers) throws ArrayIndexOutOfBoundsException {
         final String[] newState = payload[1].split(":");
+        try {
+            String urlDecodedData = java.net.URLDecoder.decode(newState[0], "UTF-8");
+            if (urlDecodedData.length() > 20) {
+                urlDecodedData = urlDecodedData.substring(0, urlDecodedData.length() > 20 ? 20 : urlDecodedData.length());
+                usrSession.user.state = java.net.URLEncoder.encode(urlDecodedData, "UTF-8").replaceAll("\\+", "%20");
+            } else {
+                usrSession.user.state = newState[0];
+            }
+        } catch (UnsupportedEncodingException e) {
+            usrSession.user.state = newState[0].substring(0, newState[0].length() > 20 ? 20 : newState[0].length());
+        }
+        usrSession.user.stateModifiedAt = System.currentTimeMillis() / 1000;
+
         LOG.debug(String.format("Client from %s (%s) change state from \"%s\" to \"%s\"",
                 usrSession.network.address,
                 usrSession.user.login,
                 usrSession.user.state,
-                newState[0]));
-        usrSession.user.state = newState[0];
-        usrSession.user.stateModifiedAt = System.currentTimeMillis() / 1000;
+                usrSession.user.state));
 
         final List<Session> toSendNotification = globalFollowers.get(usrSession.user.login);
         if (toSendNotification != null) {
