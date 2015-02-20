@@ -104,8 +104,8 @@ public class WhoCommandImpl implements Command {
                     s.user.state,
                     s.user.stateModifiedAt,
                     s.user.clientName);
-            usrSession.outputBuffer.add(cmdFormat);
+            usrSession.addOutputDataAsChunk(cmdFormat);
         }
-        usrSession.outputBuffer.add(String.format("%s | who rep 002 -- cmd end\n", cmdHeader));
+        usrSession.addOutputDataAsChunk(String.format("%s | who rep 002 -- cmd end\n", cmdHeader));
     }
 }

@@ -151,7 +151,7 @@ public class NSServer implements NIOEventListener {
         usrSess.network.selector = selector;
         usrSess.hash = MD5.hash(String.format("%s%d", socket.toString(), curTimestamp));
 
-        usrSess.outputBuffer.add(String.format("salut %d %s %s %d %d\n",
+        usrSess.addOutputDataAsChunk(String.format("salut %d %s %s %d %d\n",
                 usrSess.network.fd,
                 usrSess.hash,
                 usrSess.network.ip,
@@ -268,26 +268,26 @@ public class NSServer implements NIOEventListener {
                                 cmd.execute(payload, usrSess, this.connectedUserSessions.values(), this.globalFollowers);
                             } catch (Exception e) {
                                 LOG.error("Something goes wrong during the command execution!", e);
-                                usrSess.outputBuffer.add("rep 500 -- internal error\n");
+                                usrSess.addOutputDataAsChunk("rep 500 -- internal error\n");
                             }
                         } else {
                             if (minArgs == maxArgs) {
-                                usrSess.outputBuffer.add(String.format("rep 003 -- cmd bad number of arguments %d should be %d\n", payload.length, minArgs));
+                                usrSess.addOutputDataAsChunk(String.format("rep 003 -- cmd bad number of arguments %d should be %d\n", payload.length, minArgs));
                             } else if (maxArgs == -1) {
-                                usrSess.outputBuffer.add(String.format("rep 003 -- cmd bad number of arguments %d should be at least %d\n", payload.length, minArgs));
+                                usrSess.addOutputDataAsChunk(String.format("rep 003 -- cmd bad number of arguments %d should be at least %d\n", payload.length, minArgs));
                             } else {
-                                usrSess.outputBuffer.add(String.format("rep 003 -- cmd bad number of arguments %d should be between %d and %d\n", payload.length, minArgs, maxArgs));
+                                usrSess.addOutputDataAsChunk(String.format("rep 003 -- cmd bad number of arguments %d should be between %d and %d\n", payload.length, minArgs, maxArgs));
                             }
                         }
                     } else {
                         if (cmd.getType() == Command.CmdType.AUTHENTICATION) {
-                            usrSess.outputBuffer.add("rep 008 -- agent already log\n");
+                            usrSess.addOutputDataAsChunk("rep 008 -- agent already log\n");
                         } else {
-                            usrSess.outputBuffer.add("rep 403 -- forbidden\n");
+                            usrSess.addOutputDataAsChunk("rep 403 -- forbidden\n");
                         }
                     }
                 } else {
-                    usrSess.outputBuffer.add("rep 001 -- no such cmd\n");
+                    usrSess.addOutputDataAsChunk("rep 001 -- no such cmd\n");
                 }
                 usrSess.network.registerWriteEvent();
             }
@@ -296,7 +296,7 @@ public class NSServer implements NIOEventListener {
             } else {
                 final Instant lastSockActivity = this.nioServer.getInactivityTTL(usrSess.network.socket);
                 if (lastSockActivity != null && currentInstant.isAfter(lastSockActivity.plusMillis(Settings.socketTTL * 750)) && usrSess.lastPingSent.isBefore(currentInstant)) {
-                    usrSess.outputBuffer.add(String.format("ping %d\n", lastSockActivity.plusSeconds(Settings.socketTTL).minusSeconds(currentInstant.getEpochSecond()).getEpochSecond()));
+                    usrSess.addOutputDataAsChunk(String.format("ping %d\n", lastSockActivity.plusSeconds(Settings.socketTTL).minusSeconds(currentInstant.getEpochSecond()).getEpochSecond()));
                     usrSess.network.registerWriteEvent();
                     usrSess.lastPingSent = currentInstant.plusMillis(Settings.socketTTL * 800);
                 } else if (lastSockActivity == null) {

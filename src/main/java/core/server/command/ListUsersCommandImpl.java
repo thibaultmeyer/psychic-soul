@@ -81,7 +81,7 @@ public class ListUsersCommandImpl implements Command {
     @Override
     public void execute(final String[] payload, final Session usrSession, final Collection<Session> connectedSessions, final Map<String, List<Session>> globalFollowers) throws ArrayIndexOutOfBoundsException {
         final List<Session> filterSession = (payload.length == 2) ? ListLoginParser.parseToSession(payload[1], connectedSessions) : null;
-        usrSession.outputBuffer.addAll(connectedSessions.stream()
+        usrSession.addOutputDataAsChunk(connectedSessions.stream()
                 .filter(us -> us.user.login != null)
                 .filter(us -> (filterSession == null) || filterSession.contains(us))
                 .map(us -> String.format(ListUsersCommandImpl.LIST_USERS_FORMAT,
@@ -99,6 +99,6 @@ public class ListUsersCommandImpl implements Command {
                         us.user.stateModifiedAt,
                         us.user.clientName))
                 .collect(Collectors.toList()));
-        usrSession.outputBuffer.add("rep 002 -- cmd end\n");
+        usrSession.addOutputDataAsChunk("rep 002 -- cmd end\n");
     }
 }

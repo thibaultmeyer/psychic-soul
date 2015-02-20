@@ -4,6 +4,7 @@ import core.network.DisconnectReason;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -39,7 +40,7 @@ public class Session {
     public SessionStageLevel stageLevel;
 
     /**
-     * The authentication type of this session
+     * The authentication type of this session.
      */
     public SessionAuthType authType;
 
@@ -49,12 +50,12 @@ public class Session {
     public SessionUser user;
 
     /**
-     * Input buffer
+     * Input buffer.
      */
     public List<String> inputBuffer;
 
     /**
-     * Output buffer
+     * Output buffer.
      */
     public List<String> outputBuffer;
 
@@ -64,12 +65,12 @@ public class Session {
     public DisconnectReason disconnectReason;
 
     /**
-     * When the last ping was sent to this session
+     * When the last ping was sent to this session.
      */
     public Instant lastPingSent;
 
     /**
-     * When the last ping was received from the connected client
+     * When the last ping was received from the connected client.
      */
     public Instant lastPingReceived;
 
@@ -132,5 +133,18 @@ public class Session {
      */
     public void addOutputDataAsChunk(final String data) {
         Collections.addAll(this.outputBuffer, splitPattern.split(data));
+    }
+
+    /**
+     * Add data to the output buffer. Data will be split of n part of
+     * size defined by {@code Session.CHUNK_SIZE}.
+     *
+     * @param data The collection of data to append to the output buffer
+     * @since 1.2.0
+     */
+    public void addOutputDataAsChunk(final Collection<? extends String> data) {
+        for (final String s : data) {
+            Collections.addAll(this.outputBuffer, splitPattern.split(s));
+        }
     }
 }

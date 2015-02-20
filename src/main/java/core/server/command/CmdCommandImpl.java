@@ -136,7 +136,7 @@ public class CmdCommandImpl implements Command {
     @Override
     public void execute(final String[] payload, final Session usrSession, final Collection<Session> connectedSessions, final Map<String, List<Session>> globalFollowers) throws ArrayIndexOutOfBoundsException {
         if (payload[0].compareTo((usrSession.authType == SessionAuthType.INTERNAL_AUTHENTICATION) ? "cmd" : "user_cmd") != 0) {
-            usrSession.outputBuffer.add("rep 403 -- forbidden\n");
+            usrSession.addOutputDataAsChunk("rep 403 -- forbidden\n");
         } else {
             final Command cmd = this.enabledCommands.get(payload[1]);
             if (cmd != null) {
@@ -149,26 +149,26 @@ public class CmdCommandImpl implements Command {
                             cmd.execute((String[]) Arrays.asList(Arrays.copyOfRange(payload, 1, payload.length)).toArray(), usrSession, connectedSessions, globalFollowers);
                         } catch (Exception e) {
                             LOG.error("Something goes wrong during the command execution!", e);
-                            usrSession.outputBuffer.add("rep 500 -- internal error\n");
+                            usrSession.addOutputDataAsChunk("rep 500 -- internal error\n");
                         }
                     } else {
                         if (minArgs == maxArgs) {
-                            usrSession.outputBuffer.add(String.format("rep 003 -- cmd bad number of arguments %d should be %d\n", curArgs, minArgs));
+                            usrSession.addOutputDataAsChunk(String.format("rep 003 -- cmd bad number of arguments %d should be %d\n", curArgs, minArgs));
                         } else if (maxArgs == -1) {
-                            usrSession.outputBuffer.add(String.format("rep 003 -- cmd bad number of arguments %d should be at least %d\n", curArgs, minArgs));
+                            usrSession.addOutputDataAsChunk(String.format("rep 003 -- cmd bad number of arguments %d should be at least %d\n", curArgs, minArgs));
                         } else {
-                            usrSession.outputBuffer.add(String.format("rep 003 -- cmd bad number of arguments %d should be between %d and %d\n", curArgs, minArgs, maxArgs));
+                            usrSession.addOutputDataAsChunk(String.format("rep 003 -- cmd bad number of arguments %d should be between %d and %d\n", curArgs, minArgs, maxArgs));
                         }
                     }
                 } else {
                     if (cmd.getType() == Command.CmdType.AUTHENTICATION) {
-                        usrSession.outputBuffer.add("rep 008 -- agent already log\n");
+                        usrSession.addOutputDataAsChunk("rep 008 -- agent already log\n");
                     } else {
-                        usrSession.outputBuffer.add("rep 403 -- forbidden\n");
+                        usrSession.addOutputDataAsChunk("rep 403 -- forbidden\n");
                     }
                 }
             } else {
-                usrSession.outputBuffer.add("rep 001 -- no such cmd\n");
+                usrSession.addOutputDataAsChunk("rep 001 -- no such cmd\n");
             }
         }
     }

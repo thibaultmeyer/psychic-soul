@@ -112,7 +112,7 @@ public class StateCommandImpl implements Command {
                 final String notifPacket = String.format("%s %s\n",
                         s.authType == SessionAuthType.EXTERNAL_AUTHENTICATION ? "user_cmd" : "cmd",
                         notifData);
-                s.outputBuffer.add(notifPacket);
+                s.addOutputDataAsChunk(notifPacket);
                 s.network.registerWriteEvent();
                 if (LOG.isTraceEnabled()) {
                     LOG.trace(String.format("Send notification to %s (%s) that user %s (%s) is now \"%s\"",
