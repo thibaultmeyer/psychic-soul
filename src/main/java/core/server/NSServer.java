@@ -39,9 +39,9 @@ public class NSServer implements NIOEventListener {
     private static final long SELECT_TIMEOUT = 50;
 
     /**
-     * Incoming data buffer size.
+     * Chunk size.
      */
-    private static final int BYTEBUFFER_SIZE = 10;
+    private static final int CHUNK_SIZE = 256;
 
     /**
      * NIO Server instance.
@@ -172,14 +172,14 @@ public class NSServer implements NIOEventListener {
     @Override
     public int onReadableEvent(Selector selector, SocketChannel socket) throws IOException {
         final Session usrSess = this.connectedUserSessions.get(socket.hashCode());
-        final ByteBuffer buffer = ByteBuffer.allocate(NSServer.BYTEBUFFER_SIZE);
+        final ByteBuffer buffer = ByteBuffer.allocate(NSServer.CHUNK_SIZE);
         int nbRead;
 
         nbRead = socket.read(buffer);
         if (nbRead > 0) {
             buffer.flip();
             while (buffer.hasRemaining()) {
-                final byte[] tmpBuffer = new byte[nbRead >= NSServer.BYTEBUFFER_SIZE ? NSServer.BYTEBUFFER_SIZE : nbRead];
+                final byte[] tmpBuffer = new byte[nbRead >= NSServer.CHUNK_SIZE ? NSServer.CHUNK_SIZE : nbRead];
                 buffer.get(tmpBuffer);
                 final String tmpBufferCleaned = new String(tmpBuffer, "UTF-8");
                 usrSess.inputBuffer.add(tmpBufferCleaned.replaceAll("\\p{Cc}\\p{Cf}\\p{Co}\\p{Cn}", "?").replace("\r", ""));

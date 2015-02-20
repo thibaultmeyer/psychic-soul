@@ -4,7 +4,9 @@ import core.network.DisconnectReason;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * {@code Session} contain all information about an active session.
@@ -13,6 +15,13 @@ import java.util.List;
  * @since 1.0.0
  */
 public class Session {
+
+    /**
+     * Chunk size.
+     *
+     * @since 1.2.0
+     */
+    private static final int CHUNK_SIZE = 256;
 
     /**
      * Network information.
@@ -65,6 +74,13 @@ public class Session {
     public Instant lastPingReceived;
 
     /**
+     * Compiled pattern used to create chunk.
+     *
+     * @since 1.2.0
+     */
+    private Pattern splitPattern;
+
+    /**
      * Default constructor.
      */
     public Session() {
@@ -75,6 +91,7 @@ public class Session {
         this.outputBuffer = new ArrayList<String>();
         this.lastPingSent = Instant.now();
         this.lastPingReceived = Instant.now();
+        this.splitPattern = Pattern.compile("(?<=\\G.{" + Session.CHUNK_SIZE + "})");
     }
 
     /**
@@ -104,5 +121,16 @@ public class Session {
             return null;
         }
         return payload.isEmpty() ? null : payload.trim().split("\\s+");
+    }
+
+    /**
+     * Add data to the output buffer. Data will be split of n part of
+     * size defined by {@code Session.CHUNK_SIZE}.
+     *
+     * @param data The data to append to the output buffer
+     * @since 1.2.0
+     */
+    public void addOutputDataAsChunk(final String data) {
+        Collections.addAll(this.outputBuffer, splitPattern.split(data));
     }
 }

@@ -108,10 +108,10 @@ public class MsgUserCommandImpl implements Command {
                     ));
                 }
                 final String cmdFormat = String.format("%s | msg %s\n", cmdHeader, payload[3]);
-                s.outputBuffer.add(cmdFormat);
+                s.addOutputDataAsChunk(cmdFormat);
             } else {
                 final String cmdFormat = String.format("%s | %s %s\n", cmdHeader, payload[2], payload[3]);
-                s.outputBuffer.add(cmdFormat);
+                s.addOutputDataAsChunk(cmdFormat);
             }
             s.network.registerWriteEvent();
         }
