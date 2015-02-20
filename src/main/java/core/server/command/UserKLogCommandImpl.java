@@ -24,10 +24,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Authentication agent for user from external location.
@@ -133,7 +130,7 @@ public class UserKLogCommandImpl implements Command {
         if (payload[0].compareTo((usrSession.authType == SessionAuthType.INTERNAL_AUTHENTICATION) ? "user_log" : "ext_user_log") != 0) {
             usrSession.outputBuffer.add("rep 403 -- forbidden\n");
         } else {
-            final String userName = this.__verifyKerberosTicket("".getBytes());
+            final String userName = this.__verifyKerberosTicket(Base64.getDecoder().decode(payload[1]));
             if (userName != null) {
                 boolean canLogin = false;
                 final Connection dbConn = DBPool.getInstance().getSQLConnection();
