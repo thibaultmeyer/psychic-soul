@@ -48,7 +48,7 @@ public class MsgUserCommandImpl implements Command {
      * @return The maximal number of arguments needed
      */
     public int getMaximalArgsCountNeeded() {
-        return 4;
+        return -1;
     }
 
     /**
@@ -110,7 +110,11 @@ public class MsgUserCommandImpl implements Command {
                 final String cmdFormat = String.format("%s | msg %s\n", cmdHeader, payload[3]);
                 s.addOutputDataAsChunk(cmdFormat);
             } else {
-                final String cmdFormat = String.format("%s | %s %s\n", cmdHeader, payload[2], payload[3]);
+                String data = "";
+                for (int i = 3; i < payload.length; ++i) {
+                    data = " " + payload[i];
+                }
+                final String cmdFormat = String.format("%s | %s%s\n", cmdHeader, payload[2], data);
                 s.addOutputDataAsChunk(cmdFormat);
             }
             s.network.registerWriteEvent();
