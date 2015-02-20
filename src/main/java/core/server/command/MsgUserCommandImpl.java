@@ -37,7 +37,7 @@ public class MsgUserCommandImpl implements Command {
      * @return The minimal number of arguments needed
      */
     public int getMinimalArgsCountNeeded() {
-        return 4;
+        return 3;
     }
 
     /**
@@ -95,9 +95,8 @@ public class MsgUserCommandImpl implements Command {
                 usrSession.network.ip,
                 usrSession.user.operatingSystem,
                 usrSession.user.location);
-
         for (final Session s : lstSessDest) {
-            if (payload[2].compareToIgnoreCase("msg") == 0) {
+            if (payload[2].compareToIgnoreCase("msg") == 0 && payload.length >= 3) {
                 if (LOG.isTraceEnabled()) {
                     LOG.trace(String.format("Client from %s (%s) send message to %s (%s): %s",
                             usrSession.network.address,
