@@ -157,7 +157,7 @@ public class UserLogCommandImpl implements Command {
 
         if (userGroup != null) {
             if (connectedSessions.stream().filter(us -> us.user.login != null && us.user.login.compareTo(payload[1]) == 0).count() >= Settings.cfgMaxSessionPerLogin) {
-                usrSession.outputBuffer.add("rep 737 -- too many sessions opened\n");
+                usrSession.addOutputDataAsChunk("rep 737 -- too many sessions opened\n");
                 usrSession.disconnectReason = DisconnectReason.TOO_MANY_SESSIONS;
             } else {
                 usrSession.user.login = payload[1];
@@ -186,14 +186,14 @@ public class UserLogCommandImpl implements Command {
                 } catch (UnsupportedEncodingException e) {
                     usrSession.user.clientName = payload[4].substring(0, payload[4].length() > 64 ? 64 : payload[4].length());
                 }
-                usrSession.outputBuffer.add("rep 002 -- cmd end\n");
+                usrSession.addOutputDataAsChunk("rep 002 -- cmd end\n");
                 LOG.debug("Client from {} authenticated as {}", usrSession.network.address, usrSession.user.login);
                 if (this.changeState != null) {
                     this.changeState.execute((String[]) Arrays.asList("login", "connection").toArray(), usrSession, connectedSessions, globalFollowers);
                 }
             }
         } else {
-            usrSession.outputBuffer.add(String.format("rep 033 -- %s identification fail\n",
+            usrSession.addOutputDataAsChunk(String.format("rep 033 -- %s identification fail\n",
                     (usrSession.authType == SessionAuthType.EXTERNAL_AUTHENTICATION) ? "ext user" : "user"));
         }
     }

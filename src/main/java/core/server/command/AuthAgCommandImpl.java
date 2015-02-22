@@ -82,19 +82,19 @@ public class AuthAgCommandImpl implements Command {
             usrSession.authType = SessionAuthType.EXTERNAL_AUTHENTICATION;
             usrSession.user.trustLevelClient = 3;
             usrSession.user.trustLevelUser = 1;
-            usrSession.outputBuffer.add("rep 002 -- cmd end\n");
+            usrSession.addOutputDataAsChunk("rep 002 -- cmd end\n");
         } else if (payload[1].compareTo("user") == 0) {
             if (payload[2].compareTo("none") != 0) {
                 usrSession.stageLevel = SessionStageLevel.AUTHENTICATION_REQUESTED;
                 usrSession.authType = SessionAuthType.INTERNAL_AUTHENTICATION;
                 usrSession.user.trustLevelClient = 1;
                 usrSession.user.trustLevelUser = 3;
-                usrSession.outputBuffer.add("rep 002 -- cmd end\n");
+                usrSession.addOutputDataAsChunk("rep 002 -- cmd end\n");
             } else {
-                usrSession.outputBuffer.add("rep 005 -- no such auth\n");
+                usrSession.addOutputDataAsChunk("rep 005 -- no such auth\n");
             }
         } else {
-            usrSession.outputBuffer.add("rep 004 -- no such agent");
+            usrSession.addOutputDataAsChunk("rep 004 -- no such agent");
         }
     }
 }
