@@ -233,14 +233,13 @@ public class UserKLogCommandImpl implements Command {
                         GSSContext context = manager.createContext((GSSCredential) null);
                         context.acceptSecContext(krbTicket, 0, krbTicket.length);
                         return context.getSrcName().toString();
-                    } catch (GSSException e) {
-                        LOG.warn("Can't verify ticket", e);
+                    } catch (GSSException ignore) {
                         return null;
                     }
                 }
             });
         } catch (LoginException e) {
-            LOG.warn("Can't authenticate against the KDC", e);
+            LOG.error("Can't authenticate against the KDC", e);
         }
         return null;
     }
@@ -266,7 +265,7 @@ public class UserKLogCommandImpl implements Command {
         /**
          * Handles the callbacks, and sets the user/password detail.
          *
-         * @param callbacks the callbacks to handle
+         * @param callbacks The callbacks to handle
          * @throws IOException if an input or output error occurs.
          */
         public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
