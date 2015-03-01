@@ -37,7 +37,7 @@ public class MsgUserCommandImpl implements Command {
      * @return The minimal number of arguments needed
      */
     public int getMinimalArgsCountNeeded() {
-        return 4;
+        return 3;
     }
 
     /**
@@ -48,7 +48,7 @@ public class MsgUserCommandImpl implements Command {
      * @return The maximal number of arguments needed
      */
     public int getMaximalArgsCountNeeded() {
-        return 4;
+        return -1;
     }
 
     /**
@@ -95,9 +95,8 @@ public class MsgUserCommandImpl implements Command {
                 usrSession.network.ip,
                 usrSession.user.operatingSystem,
                 usrSession.user.location);
-
         for (final Session s : lstSessDest) {
-            if (payload[2].compareToIgnoreCase("msg") == 0) {
+            if (payload[2].compareToIgnoreCase("msg") == 0 && payload.length >= 3) {
                 if (LOG.isTraceEnabled()) {
                     LOG.trace(String.format("Client from %s (%s) send message to %s (%s): %s",
                             usrSession.network.address,
@@ -108,10 +107,14 @@ public class MsgUserCommandImpl implements Command {
                     ));
                 }
                 final String cmdFormat = String.format("%s | msg %s\n", cmdHeader, payload[3]);
-                s.outputBuffer.add(cmdFormat);
+                s.addOutputDataAsChunk(cmdFormat);
             } else {
-                final String cmdFormat = String.format("%s | %s %s\n", cmdHeader, payload[2], payload[3]);
-                s.outputBuffer.add(cmdFormat);
+                String data = "";
+                for (int i = 3; i < payload.length; ++i) {
+                    data = " " + payload[i];
+                }
+                final String cmdFormat = String.format("%s | %s%s\n", cmdHeader, payload[2], data);
+                s.addOutputDataAsChunk(cmdFormat);
             }
             s.network.registerWriteEvent();
         }

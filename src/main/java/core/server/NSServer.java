@@ -39,9 +39,9 @@ public class NSServer implements NIOEventListener {
     private static final long SELECT_TIMEOUT = 50;
 
     /**
-     * Incoming data buffer size.
+     * Chunk size.
      */
-    private static final int BYTEBUFFER_SIZE = 512;
+    private static final int CHUNK_SIZE = 256;
 
     /**
      * NIO Server instance.
@@ -151,7 +151,7 @@ public class NSServer implements NIOEventListener {
         usrSess.network.selector = selector;
         usrSess.hash = MD5.hash(String.format("%s%d", socket.toString(), curTimestamp));
 
-        usrSess.outputBuffer.add(String.format("salut %d %s %s %d %d\n",
+        usrSess.addOutputDataAsChunk(String.format("salut %d %s %s %d %d\n",
                 usrSess.network.fd,
                 usrSess.hash,
                 usrSess.network.ip,
@@ -172,19 +172,21 @@ public class NSServer implements NIOEventListener {
     @Override
     public int onReadableEvent(Selector selector, SocketChannel socket) throws IOException {
         final Session usrSess = this.connectedUserSessions.get(socket.hashCode());
-        final ByteBuffer buffer = ByteBuffer.allocate(NSServer.BYTEBUFFER_SIZE);
+        final ByteBuffer buffer = ByteBuffer.allocate(NSServer.CHUNK_SIZE);
         int nbRead;
 
-        while ((nbRead = socket.read(buffer)) > 0) {
+        nbRead = socket.read(buffer);
+        if (nbRead > 0) {
             buffer.flip();
             while (buffer.hasRemaining()) {
-                final byte[] tmpBuffer = new byte[nbRead > NSServer.BYTEBUFFER_SIZE ? NSServer.BYTEBUFFER_SIZE : nbRead];
+                final byte[] tmpBuffer = new byte[nbRead >= NSServer.CHUNK_SIZE ? NSServer.CHUNK_SIZE : nbRead];
                 buffer.get(tmpBuffer);
                 final String tmpBufferCleaned = new String(tmpBuffer, "UTF-8");
                 usrSess.inputBuffer.add(tmpBufferCleaned.replaceAll("\\p{Cc}\\p{Cf}\\p{Co}\\p{Cn}", "?").replace("\r", ""));
             }
             buffer.clear();
         }
+
         return nbRead;
     }
 
@@ -198,21 +200,21 @@ public class NSServer implements NIOEventListener {
      */
     @Override
     public int onWritableEvent(Selector selector, SocketChannel socket) throws IOException {
-        int nbByteWritten = 0;
         final Session usrSess = this.connectedUserSessions.get(socket.hashCode());
-
+        int nbByteWritten = 0;
         try {
-            while (!usrSess.outputBuffer.isEmpty()) {
+            if (!usrSess.outputBuffer.isEmpty()) {
                 final String data = usrSess.outputBuffer.remove(0);
                 final int dataSize = data.length();
-                final int tmpByteWritten = socket.write(ByteBuffer.wrap(data.getBytes()));
-                nbByteWritten += tmpByteWritten;
-                if (tmpByteWritten != dataSize) {
-                    usrSess.outputBuffer.add(0, data.substring(tmpByteWritten));
+                nbByteWritten = socket.write(ByteBuffer.wrap(data.getBytes()));
+                if (nbByteWritten != dataSize) {
+                    usrSess.outputBuffer.add(0, data.substring(nbByteWritten));
                     throw new RuntimeException("Data partially sent");
                 }
             }
-            usrSess.network.unregisterWriteEvent();
+            if (usrSess.outputBuffer.isEmpty()) {
+                usrSess.network.unregisterWriteEvent();
+            }
         } catch (RuntimeException ignore) {
         }
         if (usrSess.disconnectReason != null && usrSess.network.socket != null) {
@@ -266,26 +268,26 @@ public class NSServer implements NIOEventListener {
                                 cmd.execute(payload, usrSess, this.connectedUserSessions.values(), this.globalFollowers);
                             } catch (Exception e) {
                                 LOG.error("Something goes wrong during the command execution!", e);
-                                usrSess.outputBuffer.add("rep 500 -- internal error\n");
+                                usrSess.addOutputDataAsChunk("rep 500 -- internal error\n");
                             }
                         } else {
                             if (minArgs == maxArgs) {
-                                usrSess.outputBuffer.add(String.format("rep 003 -- cmd bad number of arguments %d should be %d\n", payload.length, minArgs));
+                                usrSess.addOutputDataAsChunk(String.format("rep 003 -- cmd bad number of arguments %d should be %d\n", payload.length, minArgs));
                             } else if (maxArgs == -1) {
-                                usrSess.outputBuffer.add(String.format("rep 003 -- cmd bad number of arguments %d should be at least %d\n", payload.length, minArgs));
+                                usrSess.addOutputDataAsChunk(String.format("rep 003 -- cmd bad number of arguments %d should be at least %d\n", payload.length, minArgs));
                             } else {
-                                usrSess.outputBuffer.add(String.format("rep 003 -- cmd bad number of arguments %d should be between %d and %d\n", payload.length, minArgs, maxArgs));
+                                usrSess.addOutputDataAsChunk(String.format("rep 003 -- cmd bad number of arguments %d should be between %d and %d\n", payload.length, minArgs, maxArgs));
                             }
                         }
                     } else {
                         if (cmd.getType() == Command.CmdType.AUTHENTICATION) {
-                            usrSess.outputBuffer.add("rep 008 -- agent already log\n");
+                            usrSess.addOutputDataAsChunk("rep 008 -- agent already log\n");
                         } else {
-                            usrSess.outputBuffer.add("rep 403 -- forbidden\n");
+                            usrSess.addOutputDataAsChunk("rep 403 -- forbidden\n");
                         }
                     }
                 } else {
-                    usrSess.outputBuffer.add("rep 001 -- no such cmd\n");
+                    usrSess.addOutputDataAsChunk("rep 001 -- no such cmd\n");
                 }
                 usrSess.network.registerWriteEvent();
             }
@@ -294,7 +296,7 @@ public class NSServer implements NIOEventListener {
             } else {
                 final Instant lastSockActivity = this.nioServer.getInactivityTTL(usrSess.network.socket);
                 if (lastSockActivity != null && currentInstant.isAfter(lastSockActivity.plusMillis(Settings.socketTTL * 750)) && usrSess.lastPingSent.isBefore(currentInstant)) {
-                    usrSess.outputBuffer.add(String.format("ping %d\n", lastSockActivity.plusSeconds(Settings.socketTTL).minusSeconds(currentInstant.getEpochSecond()).getEpochSecond()));
+                    usrSess.addOutputDataAsChunk(String.format("ping %d\n", lastSockActivity.plusSeconds(Settings.socketTTL).minusSeconds(currentInstant.getEpochSecond()).getEpochSecond()));
                     usrSess.network.registerWriteEvent();
                     usrSess.lastPingSent = currentInstant.plusMillis(Settings.socketTTL * 800);
                 } else if (lastSockActivity == null) {

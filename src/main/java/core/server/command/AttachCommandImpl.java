@@ -73,6 +73,6 @@ public class AttachCommandImpl implements Command {
      */
     @Override
     public void execute(final String[] payload, final Session usrSession, final Collection<Session> connectedSessions, final Map<String, List<Session>> globalFollowers) throws ArrayIndexOutOfBoundsException {
-        usrSession.outputBuffer.add("rep 002 -- cmd end\n");
+        usrSession.addOutputDataAsChunk("rep 002 -- cmd end\n");
     }
 }
