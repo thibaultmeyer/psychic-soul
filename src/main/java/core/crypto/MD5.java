@@ -7,6 +7,7 @@ import java.security.NoSuchAlgorithmException;
  * This class simplifies the generation of MD5 hash in Java.
  *
  * @author Thibaut Meyer
+ * @version 1.0.0
  * @since 1.0.0
  */
 public final class MD5 {

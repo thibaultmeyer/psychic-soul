@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Non blocking socket server using Java NIO.
  *
  * @author Thibault Meyer
+ * @version 1.1.2
  * @since 1.0.0
  */
 public class NIOServer implements Runnable {

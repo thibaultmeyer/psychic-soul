@@ -24,6 +24,7 @@ import java.util.*;
  * Netsoul dedicated server.
  *
  * @author Thibault Meyer
+ * @version 1.1.2
  * @since 1.0.0
  */
 public class NSServer implements NIOEventListener {

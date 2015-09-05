@@ -5,6 +5,7 @@ package core.server.session;
  * an active session.
  *
  * @author Thibault Meyer
+ * @version 1.0.0
  * @since 1.0.0
  */
 public class SessionUser {

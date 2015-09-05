@@ -4,6 +4,7 @@ package core.server.session;
  * Possible stage level.
  *
  * @author Thibault Meyer
+ * @version 1.0.0
  * @since 1.0.0
  */
 public enum SessionStageLevel {

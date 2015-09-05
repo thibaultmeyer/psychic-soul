@@ -22,6 +22,7 @@ import java.util.*;
  * </pre>
  *
  * @author Thibault Meyer
+ * @version 1.1.0
  * @since 1.0.0
  */
 public class CmdCommandImpl implements Command {

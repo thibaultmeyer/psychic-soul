@@ -16,6 +16,7 @@ import java.sql.SQLException;
  * the SQL database connections.
  *
  * @author Thibault Meyer
+ * @version 1.0.0
  * @since 1.0.0
  */
 public class DBPool {
@@ -102,7 +103,6 @@ public class DBPool {
      * DBPool singleton Holder.
      *
      * @author Thibault Meyer
-     * @since 1.0.0
      */
     private static class DBPoolSingletonHolder {
         private final static DBPool instance = new DBPool();

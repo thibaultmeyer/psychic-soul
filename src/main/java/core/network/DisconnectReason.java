@@ -4,6 +4,7 @@ package core.network;
  * Possible reasons for what a client socket has been closed and removed.
  *
  * @author Thibault Meyer
+ * @version 1.0.0
  * @since 1.0.0
  */
 public enum DisconnectReason {

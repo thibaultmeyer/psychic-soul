@@ -16,6 +16,7 @@ import java.util.Properties;
  * </pre>
  *
  * @author Thibault Meyer
+ * @version 1.1.0
  * @since 1.1.0
  */
 public class VersionCommandImpl implements Command {

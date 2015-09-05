@@ -12,6 +12,7 @@ import java.util.Properties;
  * Settings of the Netsoul dedicated server.
  *
  * @author Thibault Meyer
+ * @version 1.2.0
  * @since 1.0.0
  */
 public final class Settings {

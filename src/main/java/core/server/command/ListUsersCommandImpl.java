@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
  * </pre>
  *
  * @author Thibault Meyer
+ * @version 1.1.0
  * @since 1.0.0
  */
 public class ListUsersCommandImpl implements Command {

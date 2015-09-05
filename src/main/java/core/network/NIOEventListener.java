@@ -5,9 +5,10 @@ import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 
 /**
- * Provide abstraction to the event callbacks of NIO Server class.
+ * Provide interface to the event callbacks of NIO Server class.
  *
  * @author Thibault Meyer
+ * @version 1.2.0
  * @see core.network.NIOServer
  * @since 1.0.0
  */
@@ -20,7 +21,7 @@ public interface NIOEventListener {
      * @param socket   The channel socket
      * @throws java.io.IOException If IO operation fail (like read/write on socket)
      */
-    public abstract void onAcceptableEvent(Selector selector, SocketChannel socket) throws IOException;
+    void onAcceptableEvent(Selector selector, SocketChannel socket) throws IOException;
 
     /**
      * Called each time a channel is ready to read.
@@ -30,7 +31,7 @@ public interface NIOEventListener {
      * @return The number of read bytes
      * @throws java.io.IOException If IO operation fail (like read/write on socket)
      */
-    public abstract int onReadableEvent(Selector selector, SocketChannel socket) throws IOException;
+    int onReadableEvent(Selector selector, SocketChannel socket) throws IOException;
 
     /**
      * Called each time a channel is ready to write.
@@ -40,7 +41,7 @@ public interface NIOEventListener {
      * @return The number of wrote bytes
      * @throws java.io.IOException If IO operation fail (like read/write on socket)
      */
-    public abstract int onWritableEvent(Selector selector, SocketChannel socket) throws IOException;
+    int onWritableEvent(Selector selector, SocketChannel socket) throws IOException;
 
     /**
      * Called each time the select() method timeout.
@@ -48,7 +49,7 @@ public interface NIOEventListener {
      * @param selector The event selector
      * @throws java.io.IOException If IO operation fail (like read/write on socket)
      */
-    public abstract void onTimeoutEvent(Selector selector) throws IOException;
+    void onTimeoutEvent(Selector selector) throws IOException;
 
     /**
      * Called each time after all selectors are processed (only when select()
@@ -57,7 +58,7 @@ public interface NIOEventListener {
      * @param selector The event selector
      * @throws java.io.IOException If IO operation fail (like read/write on socket)
      */
-    public abstract void onFinalize(Selector selector) throws IOException;
+    void onFinalize(Selector selector) throws IOException;
 
     /**
      * Called when socket channel will be closed.
@@ -66,5 +67,5 @@ public interface NIOEventListener {
      * @param discoReason The disconnection reason
      * @throws java.io.IOException If IO operation fail (like read/write on socket)
      */
-    public abstract void onDisconnected(SocketChannel socket, DisconnectReason discoReason) throws IOException;
+    void onDisconnected(SocketChannel socket, DisconnectReason discoReason) throws IOException;
 }

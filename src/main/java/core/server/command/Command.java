@@ -11,6 +11,7 @@ import java.util.Map;
  * implementation must have.
  *
  * @author Thibault Meyer
+ * @version 1.1.0
  * @since 1.0.0
  */
 public interface Command {
@@ -21,7 +22,7 @@ public interface Command {
      *
      * @return The minimal number of arguments needed
      */
-    public int getMinimalArgsCountNeeded();
+    int getMinimalArgsCountNeeded();
 
     /**
      * Get the maximal number of arguments needed. The command OpCode is
@@ -30,14 +31,14 @@ public interface Command {
      *
      * @return The maximal number of arguments needed
      */
-    public int getMaximalArgsCountNeeded();
+    int getMaximalArgsCountNeeded();
 
     /**
      * Get the type of this command.
      *
      * @return The command type
      */
-    public CmdType getType();
+    CmdType getType();
 
     /**
      * Check if this command can by executed by this user session.
@@ -46,7 +47,7 @@ public interface Command {
      * @return {@code true} is the command can be executed, otherwise, {@code false}
      * @since 1.1.0
      */
-    public boolean canExecute(final Session usrSession);
+    boolean canExecute(final Session usrSession);
 
     /**
      * Execute the command. The first entry (0) of the payload always
@@ -58,7 +59,7 @@ public interface Command {
      * @param globalFollowers   The map of all followers
      * @throws IndexOutOfBoundsException if payload don't contain enough arguments
      */
-    public void execute(final String[] payload, final Session usrSession, final Collection<Session> connectedSessions, final Map<String, List<Session>> globalFollowers) throws ArrayIndexOutOfBoundsException;
+    void execute(final String[] payload, final Session usrSession, final Collection<Session> connectedSessions, final Map<String, List<Session>> globalFollowers) throws ArrayIndexOutOfBoundsException;
 
     /**
      * Possible types of command.
@@ -66,7 +67,7 @@ public interface Command {
      * @author Thibault Meyer
      * @since 1.0.0
      */
-    public enum CmdType {
+    enum CmdType {
 
         /**
          * This method is used to authenticate user.
