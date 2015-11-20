@@ -37,6 +37,9 @@ public class CmdCommandImpl implements Command {
      */
     private Map<String, Command> enabledCommands;
 
+    /**
+     * Default constructor.
+     */
     public CmdCommandImpl() {
         this.enabledCommands = new HashMap<String, Command>();
         this.__loadEnabledCommands();
