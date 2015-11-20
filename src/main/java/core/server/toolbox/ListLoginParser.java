@@ -26,7 +26,7 @@ public final class ListLoginParser {
      * @return A list of login (String)
      */
     public static List<String> parseToLogin(final String data, final Collection<Session> connectedSessions) {
-        List<String> lstLoginDest = new LinkedList<String>(Arrays.asList(data.replaceAll("[\\{\\}]", "").split("[,;]")));
+        List<String> lstLoginDest = new LinkedList<>(Arrays.asList(data.replaceAll("[\\{\\}]", "").split("[,;]")));
         int i = 0;
         while (i < lstLoginDest.size()) {
             if (lstLoginDest.get(i).startsWith(":")) {
@@ -61,7 +61,7 @@ public final class ListLoginParser {
      * @since 1.1.0
      */
     public static List<Session> parseToSession(final String data, final Collection<Session> connectedSessions) {
-        final List<Session> lstSessionDest = new LinkedList<Session>();
+        final List<Session> lstSessionDest = new LinkedList<>();
         for (final String login : Arrays.asList(data.replaceAll("[\\{\\}]", "").split("[,;]"))) {
             if (login.startsWith(":")) {
                 final long fd = Long.valueOf(login.substring(1));

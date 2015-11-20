@@ -105,9 +105,9 @@ public class NSServer implements NIOEventListener {
      * @return The status of this method
      */
     public int run() {
-        this.connectedUserSessions = new HashMap<Integer, Session>();
-        this.enabledCommands = new HashMap<String, Command>();
-        this.globalFollowers = new HashMap<String, List<Session>>();
+        this.connectedUserSessions = new HashMap<>();
+        this.enabledCommands = new HashMap<>();
+        this.globalFollowers = new HashMap<>();
 
         LOG.info("Checking commands...");
         this.__loadEnabledCommands();

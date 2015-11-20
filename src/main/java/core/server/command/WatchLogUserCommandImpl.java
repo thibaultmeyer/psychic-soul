@@ -124,7 +124,7 @@ public class WatchLogUserCommandImpl implements Command {
         }
         */
         for (final String login : lstLoginListen) {
-            globalFollowers.putIfAbsent(login, new ArrayList<Session>());
+            globalFollowers.putIfAbsent(login, new ArrayList<>());
             if (!globalFollowers.get(login).contains(usrSession)) {
                 globalFollowers.get(login).add(usrSession);
             }

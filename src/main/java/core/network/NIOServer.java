@@ -26,13 +26,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class NIOServer implements Runnable {
 
     private static final Logger LOG = LoggerFactory.getLogger(NIOServer.class.getName());
-    private NIOEventListener eventListener;
+    private final NIOEventListener eventListener;
     private long selectTimeout;
-    private int socketListenPort;
+    private final int socketListenPort;
     private int socketTTL;
     private int socketMaxConn;
-    private Map<SocketChannel, Instant> connectedSocket;
-    private Map<SocketChannel, DisconnectReason> toDisconnectSocket;
+    private final Map<SocketChannel, Instant> connectedSocket;
+    private final Map<SocketChannel, DisconnectReason> toDisconnectSocket;
 
     /**
      * Constructor.
@@ -45,8 +45,8 @@ public class NIOServer implements Runnable {
         this.eventListener = event_listener;
         this.socketListenPort = listen_port;
         this.selectTimeout = select_timeout;
-        this.connectedSocket = new ConcurrentHashMap<SocketChannel, Instant>();
-        this.toDisconnectSocket = new ConcurrentHashMap<SocketChannel, DisconnectReason>();
+        this.connectedSocket = new ConcurrentHashMap<>();
+        this.toDisconnectSocket = new ConcurrentHashMap<>();
         this.socketTTL = 15;
         this.socketMaxConn = 50;
     }

@@ -28,7 +28,7 @@ public class Session {
     /**
      * Network information.
      */
-    public SessionNetwork network;
+    public final SessionNetwork network;
 
     /**
      * Random hash generated at connection.
@@ -48,17 +48,17 @@ public class Session {
     /**
      * User information.
      */
-    public SessionUser user;
+    public final SessionUser user;
 
     /**
      * Input buffer.
      */
-    public List<String> inputBuffer;
+    public final List<String> inputBuffer;
 
     /**
      * Output buffer.
      */
-    public List<String> outputBuffer;
+    public final List<String> outputBuffer;
 
     /**
      * Disconnect user with given reason. This variable must stay at null.
@@ -80,7 +80,7 @@ public class Session {
      *
      * @since 1.2.0
      */
-    private Pattern splitPattern;
+    private final Pattern splitPattern;
 
     /**
      * Default constructor.
@@ -89,8 +89,8 @@ public class Session {
         this.network = new SessionNetwork();
         this.user = new SessionUser();
         this.stageLevel = SessionStageLevel.NOT_AUTHENTICATED;
-        this.inputBuffer = new ArrayList<String>();
-        this.outputBuffer = new ArrayList<String>();
+        this.inputBuffer = new ArrayList<>();
+        this.outputBuffer = new ArrayList<>();
         this.lastPingSent = Instant.now();
         this.lastPingReceived = Instant.now();
         this.splitPattern = Pattern.compile("(?<=\\G.{" + Session.CHUNK_SIZE + "})");

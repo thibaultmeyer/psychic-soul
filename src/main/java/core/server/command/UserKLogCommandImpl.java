@@ -227,16 +227,14 @@ public class UserKLogCommandImpl implements Command {
             final LoginContext loginCtx = new LoginContext("Server", new LoginCallbackHandler(Settings.krb5Password));
             loginCtx.login();
 
-            return Subject.doAs(loginCtx.getSubject(), new PrivilegedAction<String>() {
-                public String run() {
-                    try {
-                        GSSManager manager = GSSManager.getInstance();
-                        GSSContext context = manager.createContext((GSSCredential) null);
-                        context.acceptSecContext(krbTicket, 0, krbTicket.length);
-                        return context.getSrcName().toString();
-                    } catch (GSSException ignore) {
-                        return null;
-                    }
+            return Subject.doAs(loginCtx.getSubject(), (PrivilegedAction<String>) () -> {
+                try {
+                    GSSManager manager = GSSManager.getInstance();
+                    GSSContext context = manager.createContext((GSSCredential) null);
+                    context.acceptSecContext(krbTicket, 0, krbTicket.length);
+                    return context.getSrcName().toString();
+                } catch (GSSException ignore) {
+                    return null;
                 }
             });
         } catch (LoginException e) {
@@ -254,8 +252,8 @@ public class UserKLogCommandImpl implements Command {
      */
     private class LoginCallbackHandler implements CallbackHandler {
 
-        private String password;
-        private String username;
+        private final String password;
+        private final String username;
 
         public LoginCallbackHandler(String password) {
             super();

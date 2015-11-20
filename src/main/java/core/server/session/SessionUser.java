@@ -33,7 +33,7 @@ public class SessionUser {
     /**
      * Operating System name of the user attached to this session.
      */
-    public String operatingSystem;
+    public final String operatingSystem;
 
     /**
      * Timestamp when user get logged in the server.
