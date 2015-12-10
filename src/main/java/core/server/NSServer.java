@@ -24,7 +24,7 @@ import java.util.*;
  * Netsoul dedicated server.
  *
  * @author Thibault Meyer
- * @version 1.1.2
+ * @version 1.3.0
  * @since 1.0.0
  */
 public class NSServer implements NIOEventListener {
@@ -130,6 +130,16 @@ public class NSServer implements NIOEventListener {
         LOG.info("Ready!");
         this.nioServer.run();
         return 0;
+    }
+
+    /**
+     * Get the number of connected sessions.
+     *
+     * @return The number of connected sessions
+     * @since 1.3.0
+     */
+    public int getConnectedSessionsCount() {
+        return this.connectedUserSessions.size();
     }
 
     /**
