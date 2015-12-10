@@ -1,5 +1,8 @@
 package mbean;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -12,6 +15,11 @@ import java.util.Properties;
  * @since 1.3.0
  */
 public class PsychicAbout implements PsychicAboutMBean {
+
+    /**
+     * Logger.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(PsychicAbout.class.getName());
 
     /**
      * The name of the project.
@@ -54,16 +62,19 @@ public class PsychicAbout implements PsychicAboutMBean {
 
     @Override
     public String getName() {
+        LOG.trace("getName");
         return this.name;
     }
 
     @Override
     public String getVersion() {
+        LOG.trace("getVersion");
         return this.version;
     }
 
     @Override
     public String getBuildDate() {
+        LOG.trace("getBuildDate");
         return this.buildDate;
     }
 }

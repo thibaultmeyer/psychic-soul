@@ -3,6 +3,7 @@ package core.server.command;
 import core.server.session.Session;
 import core.server.session.SessionAuthType;
 import core.server.session.SessionStageLevel;
+import mbean.PsychicNotification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,6 +107,7 @@ public class StateCommandImpl implements Command {
                 usrSession.user.login,
                 usrSession.user.state,
                 usrSession.user.state));
+        PsychicNotification.getInstance().onUserChangeState(usrSession.user.login, usrSession.user.state, usrSession.network.ip);
 
         final List<Session> toSendNotification = globalFollowers.get(usrSession.user.login);
         if (toSendNotification != null) {

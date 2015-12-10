@@ -1,6 +1,7 @@
 import core.server.NSServer;
 import mbean.PsychicAbout;
 import mbean.PsychicMetric;
+import mbean.PsychicNotification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,6 +75,7 @@ public class MainEntry {
         final MBeanServer jmxServer = ManagementFactory.getPlatformMBeanServer();
         jmxServer.registerMBean(new PsychicAbout(), new ObjectName("PsychicSoul:type=About"));
         jmxServer.registerMBean(new PsychicMetric(nsSrv), new ObjectName("PsychicSoul:type=Metric"));
+        jmxServer.registerMBean(PsychicNotification.getInstance(), new ObjectName("PsychicSoul:type=Notification"));
         System.exit(nsSrv.run());
     }
 }

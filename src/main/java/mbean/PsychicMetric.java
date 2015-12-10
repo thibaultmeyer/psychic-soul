@@ -1,6 +1,8 @@
 package mbean;
 
 import core.server.NSServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * PsychicMetric.
@@ -10,6 +12,11 @@ import core.server.NSServer;
  * @since 1.3.0
  */
 public class PsychicMetric implements PsychicMetricMBean {
+
+    /**
+     * Logger.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(PsychicMetric.class.getName());
 
     /**
      * Handle to the current Netsoul server.
@@ -34,6 +41,7 @@ public class PsychicMetric implements PsychicMetricMBean {
      */
     @Override
     public int getConnectedSessionsCount() {
+        LOG.trace("getConnectedSessionsCount");
         return nsServer.getConnectedSessionsCount();
     }
 }
