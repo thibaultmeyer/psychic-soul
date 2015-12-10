@@ -4,12 +4,22 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>zero_x_baadf00d</groupId>
+    <groupId>com.zero_x_baadf00d</groupId>
     <artifactId>psychic-soul</artifactId>
     <version>1.2.0</version>
     <packaging>jar</packaging>
     <name>Psychic Soul</name>
     <url>https://github.com/0xbaadf00d/psychic-soul</url>
+    <licenses>
+        <license>
+            <name>The MIT License (MIT)</name>
+            <url>https://github.com/0xbaadf00d/psychic-soul/blob/master/LICENSE</url>
+        </license>
+    </licenses>
+    <organization>
+        <name>0xBAADF00D</name>
+        <url>https://github.com/0xbaadf00d</url>
+    </organization>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
