@@ -40,6 +40,14 @@ public class PsychicNotification extends NotificationBroadcasterSupport implemen
         return PsychicNotificationSingletonHolder.instance;
     }
 
+    /**
+     * Called on user state change.
+     *
+     * @param userLogin The user's login
+     * @param state     The new user' state
+     * @param source    The source of the event
+     * @since 1.3.0
+     */
     @Override
     public void onUserChangeState(final String userLogin, final String state, final String source) {
         LOG.trace("onUserChangeState({}, {})", userLogin, state);

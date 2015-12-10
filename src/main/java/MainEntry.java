@@ -65,6 +65,10 @@ public class MainEntry {
      * Entry point.
      *
      * @param args Arguments passed to the application
+     * @throws MalformedObjectNameException   If JMX object name is malformed
+     * @throws NotCompliantMBeanException     If JMX MBean is not compliant
+     * @throws InstanceAlreadyExistsException If JMX server instance already initialized
+     * @throws MBeanRegistrationException     If something goes wrong during MBean registration
      * @since 1.0.0
      */
     public static void main(final String[] args) throws MalformedObjectNameException, NotCompliantMBeanException, InstanceAlreadyExistsException, MBeanRegistrationException {

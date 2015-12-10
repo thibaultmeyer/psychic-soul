@@ -60,18 +60,36 @@ public class PsychicAbout implements PsychicAboutMBean {
         }
     }
 
+    /**
+     * Get the internal name.
+     *
+     * @return The internal name
+     * @since 1.3.0
+     */
     @Override
     public String getName() {
         LOG.trace("getName");
         return this.name;
     }
 
+    /**
+     * Get the version number (ie: "1.3.0").
+     *
+     * @return The version number
+     * @since 1.3.0
+     */
     @Override
     public String getVersion() {
         LOG.trace("getVersion");
         return this.version;
     }
 
+    /**
+     * Get the build date (ie: "2015-12-10T08:22:10UTC").
+     *
+     * @return The build date
+     * @since 1.3.0
+     */
     @Override
     public String getBuildDate() {
         LOG.trace("getBuildDate");
