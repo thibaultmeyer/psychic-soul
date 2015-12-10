@@ -19,6 +19,7 @@ import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Netsoul dedicated server.
@@ -105,7 +106,7 @@ public class NSServer implements NIOEventListener {
      * @return The status of this method
      */
     public int run() {
-        this.connectedUserSessions = new HashMap<>();
+        this.connectedUserSessions = new ConcurrentHashMap<>();
         this.enabledCommands = new HashMap<>();
         this.globalFollowers = new HashMap<>();
 
