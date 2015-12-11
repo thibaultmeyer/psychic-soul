@@ -22,7 +22,9 @@ import java.util.stream.Collectors;
 public class ListUsersCommandImpl implements Command {
 
     /**
-     * Output format
+     * Output format.
+     *
+     * @since 1.0.0
      */
     private static final String LIST_USERS_FORMAT = "%d %s %s %d %d %d %d %s %s %s %s:%d %s\n";
 
@@ -31,6 +33,7 @@ public class ListUsersCommandImpl implements Command {
      * included in the number of arguments.
      *
      * @return The minimal number of arguments needed
+     * @since 1.0.0
      */
     public int getMinimalArgsCountNeeded() {
         return 1;
@@ -42,6 +45,7 @@ public class ListUsersCommandImpl implements Command {
      * command can take any number of arguments.
      *
      * @return The maximal number of arguments needed
+     * @since 1.0.0
      */
     public int getMaximalArgsCountNeeded() {
         return 2;
@@ -51,6 +55,7 @@ public class ListUsersCommandImpl implements Command {
      * Get the type of this command.
      *
      * @return The command type
+     * @since 1.0.0
      */
     @Override
     public CmdType getType() {
@@ -78,6 +83,7 @@ public class ListUsersCommandImpl implements Command {
      * @param connectedSessions The collection of connected sessions
      * @param globalFollowers   The map of all followers
      * @throws IndexOutOfBoundsException if payload don't contain enough arguments
+     * @since 1.0.0
      */
     @Override
     public void execute(final String[] payload, final Session usrSession, final Collection<Session> connectedSessions, final Map<String, List<Session>> globalFollowers) throws ArrayIndexOutOfBoundsException {

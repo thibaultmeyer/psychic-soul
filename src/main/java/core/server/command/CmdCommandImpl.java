@@ -29,16 +29,22 @@ public class CmdCommandImpl implements Command {
 
     /**
      * Logger.
+     *
+     * @since 1.0.0
      */
     private static final Logger LOG = LoggerFactory.getLogger(CmdCommandImpl.class.getName());
 
     /**
      * All enabled commands.
+     *
+     * @since 1.0.0
      */
     private final Map<String, Command> enabledCommands;
 
     /**
      * Default constructor.
+     *
+     * @since 1.0.0
      */
     public CmdCommandImpl() {
         this.enabledCommands = new HashMap<>();
@@ -47,6 +53,8 @@ public class CmdCommandImpl implements Command {
 
     /**
      * Load all enabled commands.
+     *
+     * @since 1.0.0
      */
     private void __loadEnabledCommands() {
         InputStream fis = null;
@@ -87,6 +95,7 @@ public class CmdCommandImpl implements Command {
      * included in the number of arguments.
      *
      * @return The minimal number of arguments needed
+     * @since 1.0.0
      */
     @Override
     public int getMinimalArgsCountNeeded() {
@@ -99,6 +108,7 @@ public class CmdCommandImpl implements Command {
      * command can take any number of arguments.
      *
      * @return The maximal number of arguments needed
+     * @since 1.0.0
      */
     @Override
     public int getMaximalArgsCountNeeded() {
@@ -109,6 +119,7 @@ public class CmdCommandImpl implements Command {
      * Get the type of this command.
      *
      * @return The command type
+     * @since 1.0.0
      */
     @Override
     public CmdType getType() {
@@ -136,6 +147,7 @@ public class CmdCommandImpl implements Command {
      * @param connectedSessions The collection of connected sessions
      * @param globalFollowers   The map of all followers
      * @throws IndexOutOfBoundsException if payload don't contain enough arguments
+     * @since 1.0.0
      */
     @Override
     public void execute(final String[] payload, final Session usrSession, final Collection<Session> connectedSessions, final Map<String, List<Session>> globalFollowers) throws ArrayIndexOutOfBoundsException {

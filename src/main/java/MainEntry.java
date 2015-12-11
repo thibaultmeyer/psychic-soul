@@ -1,7 +1,12 @@
 import core.server.NSServer;
+import mbean.PsychicAbout;
+import mbean.PsychicMetric;
+import mbean.PsychicNotification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.management.*;
+import java.lang.management.ManagementFactory;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -10,7 +15,7 @@ import java.nio.file.Paths;
  * Program entry point.
  *
  * @author Thibault Meyer
- * @version 1.0.0
+ * @version 1.3.0
  * @since 1.0.0
  */
 public class MainEntry {
@@ -21,8 +26,10 @@ public class MainEntry {
     private static final Logger LOG = LoggerFactory.getLogger(MainEntry.class.getName());
 
     /**
-     * Static Constructor. Hack to programmically configure Log4J and set the
+     * Static Constructor. Hack to programmatically configure Log4J and set the
      * configuration file to use.
+     *
+     * @since 1.0.0
      */
     static {
         if (MainEntry.class.getResource("/log4j.xml") == null) {
@@ -58,12 +65,21 @@ public class MainEntry {
      * Entry point.
      *
      * @param args Arguments passed to the application
+     * @throws MalformedObjectNameException   If JMX object name is malformed
+     * @throws NotCompliantMBeanException     If JMX MBean is not compliant
+     * @throws InstanceAlreadyExistsException If JMX server instance already initialized
+     * @throws MBeanRegistrationException     If something goes wrong during MBean registration
+     * @since 1.0.0
      */
-    public static void main(final String[] args) {
+    public static void main(final String[] args) throws MalformedObjectNameException, NotCompliantMBeanException, InstanceAlreadyExistsException, MBeanRegistrationException {
         LOG.info("**************************");
         LOG.info("       Psychic Soul       ");
         LOG.info("**************************");
         final NSServer nsSrv = new NSServer();
+        final MBeanServer jmxServer = ManagementFactory.getPlatformMBeanServer();
+        jmxServer.registerMBean(new PsychicAbout(), new ObjectName("PsychicSoul:type=About"));
+        jmxServer.registerMBean(new PsychicMetric(nsSrv), new ObjectName("PsychicSoul:type=Metric"));
+        jmxServer.registerMBean(PsychicNotification.getInstance(), new ObjectName("PsychicSoul:type=Notification"));
         System.exit(nsSrv.run());
     }
 }

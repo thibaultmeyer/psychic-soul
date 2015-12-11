@@ -11,11 +11,15 @@ public enum SessionAuthType {
 
     /**
      * Request authentication outside of the PIE.
+     *
+     * @since 1.0.1
      */
     EXTERNAL_AUTHENTICATION,
 
     /**
      * Request authentication from the PIE.
+     *
+     * @since 1.0.1
      */
-    INTERNAL_AUTHENTICATION,
+    INTERNAL_AUTHENTICATION
 }

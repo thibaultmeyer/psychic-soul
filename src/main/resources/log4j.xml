@@ -10,21 +10,21 @@
     </appender>
 
     <category name="core.server.NSServer">
-        <priority value="TRACE" />
+        <priority value="TRACE"/>
     </category>
     <category name="core.server.command.MsgUserCommandImpl">
-        <priority value="TRACE" />
+        <priority value="TRACE"/>
     </category>
     <category name="core.server.command.WatchLogUserCommandImpl">
-        <priority value="TRACE" />
+        <priority value="TRACE"/>
     </category>
     <category name="core.server.command.StateCommandImpl">
-        <priority value="TRACE" />
+        <priority value="TRACE"/>
     </category>
 
     <root>
-        <priority value ="DEBUG" />
-        <appender-ref ref="A1" />
+        <priority value="DEBUG"/>
+        <appender-ref ref="A1"/>
     </root>
 
 </log4j:configuration>

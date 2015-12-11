@@ -3,6 +3,7 @@ package core.server.command;
 import core.server.session.Session;
 import core.server.session.SessionAuthType;
 import core.server.session.SessionStageLevel;
+import mbean.PsychicNotification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +30,8 @@ public class StateCommandImpl implements Command {
 
     /**
      * Logger.
+     *
+     * @since 1.0.0
      */
     private static final Logger LOG = LoggerFactory.getLogger(StateCommandImpl.class.getName());
 
@@ -37,6 +40,7 @@ public class StateCommandImpl implements Command {
      * included in the number of arguments.
      *
      * @return The minimal number of arguments needed
+     * @since 1.0.0
      */
     public int getMinimalArgsCountNeeded() {
         return 2;
@@ -48,6 +52,7 @@ public class StateCommandImpl implements Command {
      * command can take any number of arguments.
      *
      * @return The maximal number of arguments needed
+     * @since 1.0.0
      */
     public int getMaximalArgsCountNeeded() {
         return 2;
@@ -57,6 +62,7 @@ public class StateCommandImpl implements Command {
      * Get the type of this command.
      *
      * @return The command type
+     * @since 1.0.0
      */
     @Override
     public CmdType getType() {
@@ -84,6 +90,7 @@ public class StateCommandImpl implements Command {
      * @param connectedSessions The collection of connected sessions
      * @param globalFollowers   The map of all followers
      * @throws IndexOutOfBoundsException if payload don't contain enough arguments
+     * @since 1.0.0
      */
     @Override
     public void execute(final String[] payload, final Session usrSession, final Collection<Session> connectedSessions, final Map<String, List<Session>> globalFollowers) throws ArrayIndexOutOfBoundsException {
@@ -101,11 +108,11 @@ public class StateCommandImpl implements Command {
         }
         usrSession.user.stateModifiedAt = System.currentTimeMillis() / 1000;
 
-        LOG.debug(String.format("Client from %s (%s) change state from \"%s\" to \"%s\"",
+        LOG.debug(String.format("Client from %s (%s) change state to \"%s\"",
                 usrSession.network.address,
                 usrSession.user.login,
-                usrSession.user.state,
                 usrSession.user.state));
+        PsychicNotification.getInstance().onUserChangeState(usrSession.user.login, usrSession.user.state, usrSession.network.ip);
 
         final List<Session> toSendNotification = globalFollowers.get(usrSession.user.login);
         if (toSendNotification != null) {

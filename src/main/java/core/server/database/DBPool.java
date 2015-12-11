@@ -23,6 +23,8 @@ public class DBPool {
 
     /**
      * Logger.
+     *
+     * @since 1.0.0
      */
     private static final Logger LOG = LoggerFactory.getLogger(DBPool.class.getName());
 
@@ -30,11 +32,14 @@ public class DBPool {
      * The data source.
      *
      * @see javax.sql.DataSource
+     * @since 1.0.0
      */
     private DataSource dataSource;
 
     /**
      * Default constructor.
+     *
+     * @since 1.0.0
      */
     private DBPool() {
         try {
@@ -53,6 +58,7 @@ public class DBPool {
      * Get the existing instance of the {@code DBPool} class.
      *
      * @return Existing instance of the {@code DBPool} class
+     * @since 1.0.0
      */
     public static DBPool getInstance() {
         return DBPoolSingletonHolder.instance;
@@ -62,6 +68,7 @@ public class DBPool {
      * Check if the DBMS is online.
      *
      * @return {@code true} if the DBMS is online, otherwise, {@code false}
+     * @since 1.0.0
      */
     public boolean isOnline() {
         try {
@@ -89,6 +96,7 @@ public class DBPool {
      * or error.
      *
      * @return A new SQL connection
+     * @since 1.0.0
      */
     public Connection getSQLConnection() {
         try {
@@ -103,6 +111,8 @@ public class DBPool {
      * DBPool singleton Holder.
      *
      * @author Thibault Meyer
+     * @version 1.0.0
+     * @since 1.0.0
      */
     private static class DBPoolSingletonHolder {
         private final static DBPool instance = new DBPool();

@@ -27,12 +27,12 @@ public class NIOServer implements Runnable {
 
     private static final Logger LOG = LoggerFactory.getLogger(NIOServer.class.getName());
     private final NIOEventListener eventListener;
-    private long selectTimeout;
     private final int socketListenPort;
-    private int socketTTL;
-    private int socketMaxConn;
     private final Map<SocketChannel, Instant> connectedSocket;
     private final Map<SocketChannel, DisconnectReason> toDisconnectSocket;
+    private long selectTimeout;
+    private int socketTTL;
+    private int socketMaxConn;
 
     /**
      * Constructor.
@@ -40,6 +40,7 @@ public class NIOServer implements Runnable {
      * @param event_listener An event listener instance
      * @param listen_port    The socket listen port
      * @param select_timeout The timeout interval
+     * @since 1.0.0
      */
     public NIOServer(NIOEventListener event_listener, int listen_port, long select_timeout) {
         this.eventListener = event_listener;
@@ -53,6 +54,8 @@ public class NIOServer implements Runnable {
 
     /**
      * Check socket TTL and disconnect flagged socket.
+     *
+     * @since 1.0.0
      */
     private void __checkSocketToDisconnect() throws ConcurrentModificationException {
         this.connectedSocket.entrySet().stream().forEach((entry) -> {
@@ -83,6 +86,8 @@ public class NIOServer implements Runnable {
 
     /**
      * Run the NIO socket server.
+     *
+     * @since 1.0.0
      */
     @Override
     public void run() {
@@ -180,6 +185,7 @@ public class NIOServer implements Runnable {
      *
      * @param select_timeout The new timeout value
      * @return The new timeout value
+     * @since 1.0.0
      */
     public long setSelectTimeout(long select_timeout) {
         this.selectTimeout = select_timeout;
@@ -190,6 +196,7 @@ public class NIOServer implements Runnable {
      * Reset the socket inactivity.
      *
      * @param socket The socket
+     * @since 1.0.0
      */
     public void resetInactivityTTL(SocketChannel socket) {
         this.connectedSocket.put(socket, Instant.now());
@@ -200,6 +207,7 @@ public class NIOServer implements Runnable {
      *
      * @param socket The socket
      * @return the {@code Instant} when the socket will be closed
+     * @since 1.0.0
      */
     public Instant getInactivityTTL(SocketChannel socket) {
         return this.connectedSocket.get(socket);
@@ -210,6 +218,7 @@ public class NIOServer implements Runnable {
      *
      * @param socket The socket
      * @param reason Why you have disconnected this client?
+     * @since 1.0.0
      */
     public void addToDisconnect(SocketChannel socket, DisconnectReason reason) {
         this.toDisconnectSocket.put(socket, reason);
@@ -219,6 +228,7 @@ public class NIOServer implements Runnable {
      * Set the time in seconds before inactive socket was closed.
      *
      * @param ttl The TTL in seconds
+     * @since 1.0.0
      */
     public void setSocketTTL(int ttl) {
         this.socketTTL = ttl;
@@ -228,6 +238,7 @@ public class NIOServer implements Runnable {
      * Set the maximum number of connected sockets.
      *
      * @param max The maximum number of connected sockets
+     * @since 1.0.0
      */
     public void setMaxConn(int max) {
         this.socketMaxConn = max;
