@@ -32,41 +32,57 @@ public class NSServer implements NIOEventListener {
 
     /**
      * Logger.
+     *
+     * @since 1.0.0
      */
     private static final Logger LOG = LoggerFactory.getLogger(NSServer.class.getName());
 
     /**
      * Timeout interval for the NIO select (in milliseconds).
+     *
+     * @since 1.0.0
      */
     private static final long SELECT_TIMEOUT = 50;
 
     /**
      * Chunk size.
+     *
+     * @since 1.0.0
      */
     private static final int CHUNK_SIZE = 256;
 
     /**
      * NIO Server instance.
+     *
+     * @since 1.0.0
      */
     private NIOServer nioServer;
 
     /**
      * Connected user.
+     *
+     * @since 1.0.0
      */
     private Map<Integer, Session> connectedUserSessions;
 
     /**
      * All enabled commands.
+     *
+     * @since 1.0.0
      */
     private Map<String, Command> enabledCommands;
 
     /**
      * Information about followers.
+     *
+     * @since 1.0.0
      */
     private Map<String, List<Session>> globalFollowers;
 
     /**
      * Load all enabled commands.
+     *
+     * @since 1.0.0
      */
     private void __loadEnabledCommands() {
         InputStream fis = null;
@@ -104,6 +120,7 @@ public class NSServer implements NIOEventListener {
      * Run the server.
      *
      * @return The status of this method
+     * @since 1.0.0
      */
     public int run() {
         this.connectedUserSessions = new ConcurrentHashMap<>();
@@ -149,6 +166,7 @@ public class NSServer implements NIOEventListener {
      * @param selector The event selector
      * @param socket   The channel socket
      * @throws java.io.IOException If IO operation fail (like read/write on socket)
+     * @since 1.0.0
      */
     @Override
     public void onAcceptableEvent(Selector selector, SocketChannel socket) throws IOException {
@@ -180,6 +198,7 @@ public class NSServer implements NIOEventListener {
      * @param socket   The channel socket
      * @return The number of read bytes
      * @throws java.io.IOException If IO operation fail (like read/write on socket)
+     * @since 1.0.0
      */
     @Override
     public int onReadableEvent(Selector selector, SocketChannel socket) throws IOException {
@@ -209,6 +228,7 @@ public class NSServer implements NIOEventListener {
      * @param socket   The channel socket
      * @return The number of wrote bytes
      * @throws java.io.IOException If IO operation fail (like read/write on socket)
+     * @since 1.0.0
      */
     @Override
     public int onWritableEvent(Selector selector, SocketChannel socket) throws IOException {
@@ -240,6 +260,7 @@ public class NSServer implements NIOEventListener {
      *
      * @param selector The event selector
      * @throws java.io.IOException If IO operation fail (like read/write on socket)
+     * @since 1.0.0
      */
     @Override
     public void onTimeoutEvent(Selector selector) throws IOException {
@@ -252,6 +273,7 @@ public class NSServer implements NIOEventListener {
      *
      * @param selector The event selector
      * @throws java.io.IOException If IO operation fail (like read/write on socket)
+     * @since 1.0.0
      */
     @Override
     public void onFinalize(Selector selector) throws IOException {
@@ -329,6 +351,7 @@ public class NSServer implements NIOEventListener {
      * @param socket      The socket channel
      * @param discoReason The disconnection reason
      * @throws java.io.IOException If IO operation fail (like read/write on socket)
+     * @since 1.0.0
      */
     @Override
     public void onDisconnected(SocketChannel socket, DisconnectReason discoReason) throws IOException {

@@ -27,63 +27,75 @@ public class Session {
 
     /**
      * Network information.
+     *
+     * @since 1.0.0
      */
     public final SessionNetwork network;
-
-    /**
-     * Random hash generated at connection.
-     */
-    public String hash;
-
-    /**
-     * The current stage level of this user session.
-     */
-    public SessionStageLevel stageLevel;
-
-    /**
-     * The authentication type of this session.
-     */
-    public SessionAuthType authType;
-
     /**
      * User information.
+     *
+     * @since 1.0.0
      */
     public final SessionUser user;
-
     /**
      * Input buffer.
+     *
+     * @since 1.0.0
      */
     public final List<String> inputBuffer;
-
     /**
      * Output buffer.
+     *
+     * @since 1.0.0
      */
     public final List<String> outputBuffer;
-
-    /**
-     * Disconnect user with given reason. This variable must stay at null.
-     */
-    public DisconnectReason disconnectReason;
-
-    /**
-     * When the last ping was sent to this session.
-     */
-    public Instant lastPingSent;
-
-    /**
-     * When the last ping was received from the connected client.
-     */
-    public Instant lastPingReceived;
-
     /**
      * Compiled pattern used to create chunk.
      *
      * @since 1.2.0
      */
     private final Pattern splitPattern;
+    /**
+     * Random hash generated at connection.
+     *
+     * @since 1.0.0
+     */
+    public String hash;
+    /**
+     * The current stage level of this user session.
+     *
+     * @since 1.0.0
+     */
+    public SessionStageLevel stageLevel;
+    /**
+     * The authentication type of this session.
+     *
+     * @since 1.0.0
+     */
+    public SessionAuthType authType;
+    /**
+     * Disconnect user with given reason. This variable must stay at null.
+     *
+     * @since 1.0.0
+     */
+    public DisconnectReason disconnectReason;
+    /**
+     * When the last ping was sent to this session.
+     *
+     * @since 1.0.0
+     */
+    public Instant lastPingSent;
+    /**
+     * When the last ping was received from the connected client.
+     *
+     * @since 1.0.0
+     */
+    public Instant lastPingReceived;
 
     /**
      * Default constructor.
+     *
+     * @since 1.0.0
      */
     public Session() {
         this.network = new SessionNetwork();
@@ -100,6 +112,7 @@ public class Session {
      * Get the next complete command payload.
      *
      * @return The payload without the "\n" end of line
+     * @since 1.0.0
      */
     public String[] getNextPayload() {
         String payload = "";
