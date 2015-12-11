@@ -27,12 +27,12 @@ public class NIOServer implements Runnable {
 
     private static final Logger LOG = LoggerFactory.getLogger(NIOServer.class.getName());
     private final NIOEventListener eventListener;
-    private long selectTimeout;
     private final int socketListenPort;
-    private int socketTTL;
-    private int socketMaxConn;
     private final Map<SocketChannel, Instant> connectedSocket;
     private final Map<SocketChannel, DisconnectReason> toDisconnectSocket;
+    private long selectTimeout;
+    private int socketTTL;
+    private int socketMaxConn;
 
     /**
      * Constructor.

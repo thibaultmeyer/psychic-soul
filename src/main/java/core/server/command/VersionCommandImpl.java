@@ -83,9 +83,9 @@ public class VersionCommandImpl implements Command {
             usrSession.addOutputDataAsChunk(String.format("%s %s %s\n",
                     properties.getOrDefault("MAVEN_PROJECT_NAME", "psychic-soul"),
                     properties.getOrDefault("MAVEN_PROJECT_VERSION", "0.0.0"),
-                    properties.getOrDefault("MAVEN_PROJECT_BUILD", "1970-01-01T00:00:00CET")));
+                    properties.getOrDefault("MAVEN_PROJECT_BUILD", "1970-01-01T00:00:00UTC")));
         } catch (IOException ignore) {
-            usrSession.addOutputDataAsChunk(String.format("psychic-soul 0.0.0 %s\n", "1970-01-01T00:00:00CET"));
+            usrSession.addOutputDataAsChunk(String.format("psychic-soul 0.0.0 %s\n", "1970-01-01T00:00:00UTC"));
         }
         try {
             fis.close();
