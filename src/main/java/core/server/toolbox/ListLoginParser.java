@@ -24,6 +24,7 @@ public final class ListLoginParser {
      * @param data              The containing the login or the list of login
      * @param connectedSessions The collection of current connected session
      * @return A list of login (String)
+     * @since 1.0.0
      */
     public static List<String> parseToLogin(final String data, final Collection<Session> connectedSessions) {
         List<String> lstLoginDest = new LinkedList<>(Arrays.asList(data.replaceAll("[\\{\\}]", "").split("[,;]")));

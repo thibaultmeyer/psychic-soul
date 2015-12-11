@@ -19,86 +19,120 @@ public final class Settings {
 
     /**
      * Logger.
+     *
+     * @since 1.0.0
      */
     private static final Logger LOG = LoggerFactory.getLogger(Settings.class.getName());
 
     /**
      * The server will listen on this port.
+     *
+     * @since 1.0.0
      */
     public static Integer socketPort;
 
     /**
      * The time in seconds before inactive socket was closed.
+     *
+     * @since 1.0.0
      */
     public static Integer socketTTL;
 
     /**
      * The maximal number of connected socket.
+     *
+     * @since 1.0.0
      */
     public static Integer socketMaxConn;
 
     /**
      * The driver to use with the database.
+     *
+     * @since 1.0.0
      */
     public static String databaseDriver;
 
     /**
      * The URL used to connect to the database.
+     *
+     * @since 1.0.0
      */
     public static String databaseUrl;
 
     /**
      * Username used to database authentication.
+     *
+     * @since 1.0.0
      */
     public static String databaseUsername;
 
     /**
-     * Password used to database authentication
+     * Password used to database authentication.
+     *
+     * @since 1.0.0
      */
     public static String databasePassword;
 
     /**
      * Is this database server have built-in functions to check password ?
+     *
+     * @since 1.0.0
      */
     public static Boolean databaseBuiltIntFunction;
 
     /**
      * Maximal number of simultaneous session allowed with the same login.
+     *
+     * @since 1.0.0
      */
     public static Integer cfgMaxSessionPerLogin;
 
     /**
      * Kerberos 5 Debug mode
+     *
+     * @since 1.2.0
      */
     public static Boolean krb5Debug;
 
     /**
-     * Kerberos 5 OID
+     * Kerberos 5 OID.
+     *
+     * @since 1.2.0
      */
     public static String krb5Oid;
 
     /**
-     * Kerberos 5 Realm
+     * Kerberos 5 Realm.
+     *
+     * @since 1.2.0
      */
     public static String krb5Realm;
 
     /**
-     * Kerberos 5 KDC
+     * Kerberos 5 KDC.
+     *
+     * @since 1.2.0
      */
     public static String krb5Kdc;
 
     /**
-     * Kerberos 5 Password
+     * Kerberos 5 Password.
+     *
+     * @since 1.2.0
      */
     public static String krb5Password;
 
     /**
      * Kerberos 5 JAAS configuration file.
+     *
+     * @since 1.2.0
      */
     public static String krb5JaasFile;
 
     /**
      * Static constructor.
+     *
+     * @since 1.0.0
      */
     static {
         InputStream fis = null;

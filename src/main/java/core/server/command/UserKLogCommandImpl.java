@@ -45,17 +45,23 @@ public class UserKLogCommandImpl implements Command {
 
     /**
      * Logger.
+     *
+     * @since 1.2.0
      */
     private static final Logger LOG = LoggerFactory.getLogger(UserKLogCommandImpl.class.getName());
 
 
     /**
      * If enabled, this command is used to send notification to followers.
+     *
+     * @since 1.2.0
      */
     private Command changeState;
 
     /**
      * Default constructor.
+     *
+     * @since 1.2.0
      */
     public UserKLogCommandImpl() {
         try {
@@ -78,6 +84,7 @@ public class UserKLogCommandImpl implements Command {
      * included in the number of arguments.
      *
      * @return The minimal number of arguments needed
+     * @since 1.2.0
      */
     public int getMinimalArgsCountNeeded() {
         return 6;
@@ -89,6 +96,7 @@ public class UserKLogCommandImpl implements Command {
      * command can take any number of arguments.
      *
      * @return The maximal number of arguments needed
+     * @since 1.2.0
      */
     public int getMaximalArgsCountNeeded() {
         return 6;
@@ -98,6 +106,7 @@ public class UserKLogCommandImpl implements Command {
      * Get the type of this command.
      *
      * @return The command type
+     * @since 1.2.0
      */
     @Override
     public CmdType getType() {
@@ -125,6 +134,7 @@ public class UserKLogCommandImpl implements Command {
      * @param connectedSessions The collection of connected sessions
      * @param globalFollowers   The map of all followers
      * @throws IndexOutOfBoundsException if payload don't contain enough arguments
+     * @since 1.2.0
      */
     @Override
     public void execute(final String[] payload, final Session usrSession, final Collection<Session> connectedSessions, final Map<String, List<Session>> globalFollowers) throws ArrayIndexOutOfBoundsException {
@@ -248,6 +258,7 @@ public class UserKLogCommandImpl implements Command {
      * for a JAAS login.
      *
      * @author Thibault Meyer
+     * @version 1.2.0
      * @since 1.2.0
      */
     private class LoginCallbackHandler implements CallbackHandler {
@@ -266,6 +277,7 @@ public class UserKLogCommandImpl implements Command {
          *
          * @param callbacks The callbacks to handle
          * @throws IOException if an input or output error occurs.
+         * @since 1.2.0
          */
         public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
             for (Callback callback : callbacks) {

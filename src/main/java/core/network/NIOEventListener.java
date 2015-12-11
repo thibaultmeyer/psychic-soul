@@ -20,6 +20,7 @@ public interface NIOEventListener {
      * @param selector The event selector
      * @param socket   The channel socket
      * @throws java.io.IOException If IO operation fail (like read/write on socket)
+     * @since 1.0.0
      */
     void onAcceptableEvent(Selector selector, SocketChannel socket) throws IOException;
 
@@ -30,6 +31,7 @@ public interface NIOEventListener {
      * @param socket   The channel socket
      * @return The number of read bytes
      * @throws java.io.IOException If IO operation fail (like read/write on socket)
+     * @since 1.0.0
      */
     int onReadableEvent(Selector selector, SocketChannel socket) throws IOException;
 
@@ -40,6 +42,7 @@ public interface NIOEventListener {
      * @param socket   The channel socket
      * @return The number of wrote bytes
      * @throws java.io.IOException If IO operation fail (like read/write on socket)
+     * @since 1.0.0
      */
     int onWritableEvent(Selector selector, SocketChannel socket) throws IOException;
 
@@ -48,6 +51,7 @@ public interface NIOEventListener {
      *
      * @param selector The event selector
      * @throws java.io.IOException If IO operation fail (like read/write on socket)
+     * @since 1.0.0
      */
     void onTimeoutEvent(Selector selector) throws IOException;
 
@@ -57,6 +61,7 @@ public interface NIOEventListener {
      *
      * @param selector The event selector
      * @throws java.io.IOException If IO operation fail (like read/write on socket)
+     * @since 1.0.0
      */
     void onFinalize(Selector selector) throws IOException;
 
@@ -66,6 +71,7 @@ public interface NIOEventListener {
      * @param socket      The socket channel
      * @param discoReason The disconnection reason
      * @throws java.io.IOException If IO operation fail (like read/write on socket)
+     * @since 1.0.0
      */
     void onDisconnected(SocketChannel socket, DisconnectReason discoReason) throws IOException;
 }

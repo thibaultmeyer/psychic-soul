@@ -27,6 +27,7 @@ public class WhoCommandImpl implements Command {
      * included in the number of arguments.
      *
      * @return The minimal number of arguments needed
+     * @since 1.0.0
      */
     public int getMinimalArgsCountNeeded() {
         return 2;
@@ -38,6 +39,7 @@ public class WhoCommandImpl implements Command {
      * command can take any number of arguments.
      *
      * @return The maximal number of arguments needed
+     * @since 1.0.0
      */
     public int getMaximalArgsCountNeeded() {
         return 2;
@@ -47,6 +49,7 @@ public class WhoCommandImpl implements Command {
      * Get the type of this command.
      *
      * @return The command type
+     * @since 1.0.0
      */
     @Override
     public CmdType getType() {
@@ -74,6 +77,7 @@ public class WhoCommandImpl implements Command {
      * @param connectedSessions The collection of connected sessions
      * @param globalFollowers   The map of all followers
      * @throws IndexOutOfBoundsException if payload don't contain enough arguments
+     * @since 1.0.0
      */
     @Override
     public void execute(final String[] payload, final Session usrSession, final Collection<Session> connectedSessions, final Map<String, List<Session>> globalFollowers) throws ArrayIndexOutOfBoundsException {

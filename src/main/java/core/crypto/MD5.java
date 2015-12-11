@@ -16,8 +16,9 @@ public final class MD5 {
      * Compute the MD5 hash of the string passed as argument.
      *
      * @param str The string that will be used to generate an MD5 hash
-     * @return the MD5 hash
+     * @return The MD5 hash
      * @throws java.lang.Error This version of Java does not support MD5
+     * @since 1.0.0
      */
     public static String hash(final String str) {
         final byte[] uniqueKey = str.getBytes();

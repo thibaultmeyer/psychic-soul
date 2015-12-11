@@ -21,6 +21,7 @@ public interface Command {
      * included in the number of arguments.
      *
      * @return The minimal number of arguments needed
+     * @since 1.0.0
      */
     int getMinimalArgsCountNeeded();
 
@@ -30,6 +31,7 @@ public interface Command {
      * command can take any number of arguments.
      *
      * @return The maximal number of arguments needed
+     * @since 1.0.0
      */
     int getMaximalArgsCountNeeded();
 
@@ -37,6 +39,7 @@ public interface Command {
      * Get the type of this command.
      *
      * @return The command type
+     * @since 1.0.0
      */
     CmdType getType();
 
@@ -58,6 +61,7 @@ public interface Command {
      * @param connectedSessions The collection of connected sessions
      * @param globalFollowers   The map of all followers
      * @throws IndexOutOfBoundsException if payload don't contain enough arguments
+     * @since 1.0.0
      */
     void execute(final String[] payload, final Session usrSession, final Collection<Session> connectedSessions, final Map<String, List<Session>> globalFollowers) throws ArrayIndexOutOfBoundsException;
 
@@ -65,18 +69,23 @@ public interface Command {
      * Possible types of command.
      *
      * @author Thibault Meyer
+     * @version 1.0.0
      * @since 1.0.0
      */
     enum CmdType {
 
         /**
          * This method is used to authenticate user.
+         *
+         * @since 1.0.0
          */
         AUTHENTICATION,
 
         /**
          * Simple command.
+         *
+         * @since 1.0.0
          */
-        COMMAND,
+        COMMAND
     }
 }
