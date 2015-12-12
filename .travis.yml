@@ -6,4 +6,6 @@ jdk:
 install:
     - mvn clean
     - mvn compile
+
+script:
     - mvn package -DskipTests=true
