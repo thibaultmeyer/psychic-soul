@@ -31,60 +31,70 @@ public class Session {
      * @since 1.0.0
      */
     public final SessionNetwork network;
+	
     /**
      * User information.
      *
      * @since 1.0.0
      */
     public final SessionUser user;
+	
     /**
      * Input buffer.
      *
      * @since 1.0.0
      */
     public final List<String> inputBuffer;
+	
     /**
      * Output buffer.
      *
      * @since 1.0.0
      */
     public final List<String> outputBuffer;
+	
     /**
      * Compiled pattern used to create chunk.
      *
      * @since 1.2.0
      */
     private final Pattern splitPattern;
+	
     /**
      * Random hash generated at connection.
      *
      * @since 1.0.0
      */
     public String hash;
+	
     /**
      * The current stage level of this user session.
      *
      * @since 1.0.0
      */
     public SessionStageLevel stageLevel;
+	
     /**
      * The authentication type of this session.
      *
      * @since 1.0.0
      */
     public SessionAuthType authType;
+	
     /**
      * Disconnect user with given reason. This variable must stay at null.
      *
      * @since 1.0.0
      */
     public DisconnectReason disconnectReason;
+	
     /**
      * When the last ping was sent to this session.
      *
      * @since 1.0.0
      */
     public Instant lastPingSent;
+	
     /**
      * When the last ping was received from the connected client.
      *
