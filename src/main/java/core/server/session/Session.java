@@ -156,7 +156,9 @@ public class Session {
      * @since 1.2.0
      */
     public void addOutputDataAsChunk(final String data) {
-        Collections.addAll(this.outputBuffer, splitPattern.split(data));
+        if (this.disconnectReason == null) {
+            Collections.addAll(this.outputBuffer, splitPattern.split(data));
+        }
     }
 
     /**
@@ -167,8 +169,10 @@ public class Session {
      * @since 1.2.0
      */
     public void addOutputDataAsChunk(final Collection<? extends String> data) {
-        for (final String s : data) {
-            Collections.addAll(this.outputBuffer, splitPattern.split(s));
+        if (this.disconnectReason == null) {
+            for (final String s : data) {
+                Collections.addAll(this.outputBuffer, splitPattern.split(s));
+            }
         }
     }
 }
