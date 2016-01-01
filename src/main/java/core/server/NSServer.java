@@ -249,7 +249,7 @@ public class NSServer implements NIOEventListener {
             }
         } catch (RuntimeException ignore) {
         }
-        if (usrSess.disconnectReason != null && usrSess.network.socket != null) {
+        if (usrSess.disconnectReason != null && usrSess.network.socket != null && usrSess.outputBuffer.size() == 0) {
             this.nioServer.addToDisconnect(usrSess.network.socket, usrSess.disconnectReason);
         }
         return nbByteWritten;
