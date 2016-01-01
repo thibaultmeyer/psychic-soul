@@ -25,13 +25,62 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class NIOServer implements Runnable {
 
+    /**
+     * Logger.
+     *
+     * @since 1.0.0
+     */
     private static final Logger LOG = LoggerFactory.getLogger(NIOServer.class.getName());
+
+    /**
+     * Java NIO event listener.
+     *
+     * @since 1.0.0
+     */
     private final NIOEventListener eventListener;
+
+    /**
+     * The bind port.
+     *
+     * @since 1.0.0
+     */
     private final int socketListenPort;
+
+    /**
+     * The current connected clients with the time when
+     * the connection was established.
+     *
+     * @see Instant
+     * @since 1.0.0
+     */
     private final Map<SocketChannel, Instant> connectedSocket;
+
+    /**
+     * The clients to disconnect.
+     *
+     * @since 1.0.0
+     */
     private final Map<SocketChannel, DisconnectReason> toDisconnectSocket;
+
+    /**
+     * The internal select timeout.
+     *
+     * @since 1.0.0
+     */
     private long selectTimeout;
+
+    /**
+     * The socket Time To Live (TTL) in seconds.
+     *
+     * @since 1.0.0
+     */
     private int socketTTL;
+
+    /**
+     * The maximum number of connection allowed.
+     *
+     * @since 1.0.0
+     */
     private int socketMaxConn;
 
     /**
@@ -49,7 +98,7 @@ public class NIOServer implements Runnable {
         this.connectedSocket = new ConcurrentHashMap<>();
         this.toDisconnectSocket = new ConcurrentHashMap<>();
         this.socketTTL = 15;
-        this.socketMaxConn = 50;
+        this.socketMaxConn = 256;
     }
 
     /**
