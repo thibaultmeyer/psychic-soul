@@ -1,8 +1,3 @@
-<a href="http://promisesaplus.com/">
-    <img src="http://icons.iconarchive.com/icons/simplefly/simple-green-social-media/48/social-media-chat-icon.png" alt="Psychic Soul"
-         title="Promises/A+ 1.1 compliant" align="right" />
-</a>
-
 # Psychic Soul
 
 [![Latest release](https://img.shields.io/badge/latest_release-1.3.1-orange.svg)](https://github.com/0xbaadf00d/psychic-soul/releases)
