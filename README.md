@@ -1,8 +1,8 @@
 # Psychic Soul
 
-[![Latest release](https://img.shields.io/badge/latest_release-1.3.1-orange.svg)](https://github.com/0xbaadf00d/psychic-soul/releases)
-[![Build](https://img.shields.io/travis-ci/0xbaadf00d/psychic-soul.svg?branch=master&style=flat)](https://travis-ci.org/0xbaadf00d/psychic-soul)
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/0xbaadf00d/psychic-soul/master/LICENSE)
+[![Latest release](https://img.shields.io/badge/latest_release-1.3.1-orange.svg)](https://github.com/thibaultmeyer/psychic-soul/releases)
+[![Build](https://api.travis-ci.org/thibaultmeyer/psychic-soul.svg?branch=master)](https://travis-ci.org/github/thibaultmeyer/psychic-soul)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/thibaultmeyer/psychic-soul/master/LICENSE)
 
 
 Psychic (Soul) est un serveur de messagerie instantanée utilisant le protocole
