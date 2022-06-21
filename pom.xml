@@ -151,8 +151,8 @@
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.13</version>
+            <artifactId>slf4j-reload4j</artifactId>
+            <version>1.7.36</version>
         </dependency>
         <dependency>
             <groupId>javax.persistence</groupId>
@@ -162,17 +162,17 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.38</version>
+            <version>8.0.29</version>
         </dependency>
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
-            <version>3.8.11.2</version>
+            <version>3.36.0.3</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-dbcp2</artifactId>
-            <version>2.1.1</version>
+            <version>2.9.0</version>
         </dependency>
     </dependencies>
 </project>
